@@ -2,12 +2,25 @@ package service
 
 import (
 	"log"
+	"github.com/google/uuid"
 	"auto_slip_api/model"
 )
 
-// 新しいグループの作成
-func CreateMagazines(magazines []model.Magazine) error {
-	_, err := DbEngine.Insert(magazines)
+type MagazineService struct{}
+
+// 雑誌登録
+func(s *MagazineService) RegisterMagazines(magazines []model.Magazine) error {
+	// 雑誌の数だけループ
+	// UUIDを生成して追加
+	for i := 0; i < len(magazines); i++{
+	// UUIDを生成して追加
+		uid, err := uuid.NewRandom()
+		if err != nil {
+			return err
+		}
+		magazines[i].MagazineUuid = uid.String() // UUIDを文字列に変換して代入
+	}
+	err := model.RegisterMagazines(magazines)
 	if err != nil {
 		log.Println("グループの作成に失敗しました:", err)
 		return err

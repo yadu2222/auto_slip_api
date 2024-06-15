@@ -8,15 +8,15 @@ import (
 type InvoiceLog struct {
 	InvoiceUuid      string `xorm:"varchar(36) pk" json:"invoiceUUID"`
 	DeliveryUuid      string  `xorm:"varchar(36) not null unique" json:"deliveryUUId"`
-	InvoiceData	time.Time `xorm:"DATETIME not null" json:"invoiceData"`
+	InvoiceDate	time.Time `xorm:"DATETIME not null" json:"invoiceDate"`
 }
 
 // テストデータ
 func CreateInvoiceLogTestData() {
 	invoiceLog1 := &InvoiceLog{
 		InvoiceUuid: "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d28",
-		DeliveryUuid: "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d29",
-		InvoiceData: time.Now(),
+		DeliveryUuid: "ac62957c-f86d-4814-95e0-ae8f86a126cd",
+		InvoiceDate: time.Now(),
 	}
 	db.Insert(invoiceLog1)
 }

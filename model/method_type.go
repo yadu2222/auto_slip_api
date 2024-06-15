@@ -1,8 +1,8 @@
 package model
 
 type MethodType struct {
-	MethodId int `xorm:"'tell_type_id' pk autoincr" json:"tellTypeId"`
-	MethodType string `xorm:"'tell_type' not null" json:"tellType"`
+	MethodId int `xorm:"'method_id' pk autoincr" json:"methodId"`
+	MethodType string `xorm:"'method_type' not null" json:"methodType"`
 }
 
 func (MethodType) TableName() string {

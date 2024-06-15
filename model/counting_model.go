@@ -8,7 +8,7 @@ import (
 type CountingRegular struct {
 	CountingUuid string  `xorm:"pk varchar(36)" json:"countingUUId"`
 	RegularUuid string `xorm:"varchar(36) not null" json:"RegularUUId"`
-	TakeData time.Time `xorm:"DATETIME not null" json:"userUUId"`
+	TakeData time.Time `xorm:"DATETIME not null" json:"taskData"`
 }
 
 // テーブル名

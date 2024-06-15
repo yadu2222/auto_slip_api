@@ -3,6 +3,9 @@ package model
 // "fmt"
 // "math/rand"
 // "time"
+import(
+	"log"
+)
 
 // groupeテーブル
 // typeで型定義
@@ -43,9 +46,48 @@ func CreateMagazineTestData(){
 
 	magazine1 := &Magazine{
 		MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
-		MagazineCode: "00001",
-		MagazineName: "週刊誌",
+		MagazineCode: "29934",
+		MagazineName: "少年ジャンプ",
 		TakerUuid: "c99cb6c4-42b9-4d6b-9884-ae6664f9df00",
 	}
 	db.Insert(magazine1)
+}
+
+// RegisterMagazinesWithDupCheckAndInsert は重複チェックを行い、雑誌を登録する関数です
+func RegisterMagazines(magazines []Magazine) error {
+    for _, magazine := range magazines {
+        exists, err := isMagazineExists(magazine)
+        if err != nil {
+            // エラーが発生した場合、ログを出力して処理を継続
+            log.Printf("雑誌 %s の重複チェック中にエラーが発生しました: %v", magazine.MagazineName, err)
+            return err
+        }
+        if exists {
+            // 重複がある場合はログを出力して処理を継続
+            log.Printf("雑誌 %s はすでに存在します", magazine.MagazineName)
+            continue
+        }
+
+        // 雑誌を登録
+        _, err = db.Insert(&magazine)
+        if err != nil {
+            // エラーが発生した場合、ログを出力して処理を継続します
+            log.Printf("雑誌 %s の登録中にエラーが発生しました: %v", magazine.MagazineName, err)
+            return err
+        }
+        log.Printf("雑誌 %s を登録しました", magazine.MagazineName)
+    }
+    return nil
+}
+
+// 指定された雑誌がすでに存在するかをチェックする関数
+func isMagazineExists(magazine Magazine) (bool, error) {
+    // ここで具体的に雑誌の重複チェックを実装します
+    var count int64
+    session := db.Where("magazine_code = ?", magazine.MagazineCode)
+    count, err := session.Count(&Magazine{})
+    if err != nil {
+        return false, err
+    }
+    return count > 0, nil
 }

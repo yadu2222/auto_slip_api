@@ -49,11 +49,11 @@ func MigrationTable() error {
 		err := db.Sync2(
 			new(Employee),
 			new(EmployeeType),
+			new(TellType),
+			new(MethodType),
 			new(Magazine),
 			new(Customer),
 			new(Regular),
-			new(TellType),
-			new(MethodType),
 			new(CountingRegular),
 			new(DeliveryLog),
 			new(InvoiceLog),
@@ -81,60 +81,62 @@ func MigrationTable() error {
 
 // 外部キーを設定
 func initFK() error {
-	// User
+	// 従業員
 	err := InitEmployeeFK()
 	if err != nil {
 		return err
 	}
-
-	// Notice
+	// 雑誌
 	err = InitMagazineFK()
 	if err != nil {
 		return err
 	}
-	// NoticeReadStatus
+	// 顧客
+	err = InitCustomerFK()
+	if err != nil {
+		return err
+	}
+	// 定期
 	err = InitRegularFK()
 	if err != nil {
 		return err
 	}
-	// TeachingMaterial
+	// 定期カウント
 	err = InitCountingRegularFK()
 	if err != nil {
 		return err
 	}
-	// Homework
+	// 納品書
 	err = InitDeliveryLogFK()
 	if err != nil {
 		return err
 	}
-	// HomeworkSubmission
+	// 請求書
 	err = InitInvoiceLogFK()
 	if err != nil {
 		return err
 	}
-
-		// HomeworkSubmission
+	// 操作履歴
 	err = InitOparateLogFK()
 	if err != nil {
 		return err
 	}
-
 	return err
 }
 
 // サンプルデータ作成
 // 外部キーの参照先テーブルを先に登録する必要がある。
 func RegisterSample() {
-	// サンプル用データ作成
+	// 基本データ
 	CreateEmployeeTypeData()	// 従業員種別
 	CreateTellTypeTestData()	// 連絡方法
 	CreateMethodTypeTestData()	// 支払方法
 
+	// テストデータ
 	CreateEmployeeTestData()	// 従業員
 	CreateMagazineTestData()	// 雑誌
 	CreateCustomerTestData()	// 顧客
 	CreateRegularTestData()		// 定期購読
-	
 	CreateCountingRegularTestData()	// 集計定期購読
 	CreateDeliveryLogTestData()		// 納品履歴
 	CreateInvoiceLogTestData()		// 請求履歴
