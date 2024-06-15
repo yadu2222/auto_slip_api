@@ -74,7 +74,7 @@ func MigrationTable() error {
 	}
 
 	// サンプルデータ作成
-	// RegisterSample()
+	RegisterSample()
 
 	return nil
 }
@@ -124,18 +124,21 @@ func initFK() error {
 
 // サンプルデータ作成
 // 外部キーの参照先テーブルを先に登録する必要がある。
-// func RegisterSample() {
-// 	// サンプル用データ作成
-// 	CreateUserTypeTestData()
-// 	CreateOuchiTestData()
-// 	CreateClassTestData()
-// 	CreateSubjectTestData()
-// 	CreateTeachingMaterialTestData()
-// 	// テスト用データ作成
-// 	CreateUserTestData()
-// 	CreateClassMembershipsTestData()
-// 	CreateNoticeTestData()
-// 	CreateNoticeReadStatusTestData()
-// 	CreateHomeworkTestData()
-// 	CreateHomeworkSubmissionTestData()
-// }
+func RegisterSample() {
+	// サンプル用データ作成
+	CreateEmployeeTypeData()	// 従業員種別
+	CreateTellTypeTestData()	// 連絡方法
+	CreateMethodTypeTestData()	// 支払方法
+
+	CreateEmployeeTestData()	// 従業員
+	CreateMagazineTestData()	// 雑誌
+	CreateCustomerTestData()	// 顧客
+	CreateRegularTestData()		// 定期購読
+	
+	CreateCountingRegularTestData()	// 集計定期購読
+	CreateDeliveryLogTestData()		// 納品履歴
+	CreateInvoiceLogTestData()		// 請求履歴
+	CreateOparateLogTestData()		// 操作履歴
+
+	
+}

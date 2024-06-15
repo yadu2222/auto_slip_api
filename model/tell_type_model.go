@@ -8,3 +8,20 @@ type TellType struct {
 func (TellType) TableName() string {
 	return "tell_types"
 }
+
+// TODO: テストデータ作成
+func CreateTellTypeTestData(){
+	tellType1 := &TellType{
+		TellType: "不要",
+	}
+	tellType2 := &TellType{
+		TellType: "要",
+	}
+	tellType3 := &TellType{
+		TellType: "着信のみ",
+	}
+	db.Insert(tellType1)
+	db.Insert(tellType2)
+	db.Insert(tellType3)
+	
+}

@@ -18,7 +18,7 @@ type Employee struct {
 func CreateEmployeeTestData() {
 	employee1 := &Employee{
 		EmployeeUuid: "c99cb6c4-42b9-4d6b-9884-ae6664f9df00",
-		EmployeeName: "やづこ",
+		EmployeeName: "やづ",
 		EmployeeTypeId: 2,
 	}
 	db.Insert(employee1)

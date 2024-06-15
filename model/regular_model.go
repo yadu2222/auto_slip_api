@@ -36,3 +36,13 @@ func InitRegularFK() error {
 
 	return nil
 }
+
+func CreateRegularTestData() {
+	regular1 := &Regular{
+		RegularUuid:  "903e3147-1b8c-4e26-a5ee-f525a246e2df",
+		MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
+		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
+		Quantity:     1,
+	}
+	db.Insert(regular1)
+}

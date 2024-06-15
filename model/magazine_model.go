@@ -30,11 +30,8 @@ func InitMagazineFK() error {
 	}
 	return nil
 }
-
-
-
 // TODO: テストデータ作成
-func TestMagazine() *Magazine {
+func CreateMagazineTestData(){
 
 	// // 乱数生成器のシードを設定する（一般的には現在時刻を使う）
 	// rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -43,10 +40,12 @@ func TestMagazine() *Magazine {
 	// randomString := fmt.Sprintf("%05d", randomInt)
 
 	// ロールデータを作成
-	magazine := &Magazine{
-		MagazineCode: "1",
-		MagazineName: "test",
+
+	magazine1 := &Magazine{
+		MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
+		MagazineCode: "00001",
+		MagazineName: "週刊誌",
+		TakerUuid: "c99cb6c4-42b9-4d6b-9884-ae6664f9df00",
 	}
-	println(magazine)
-	return magazine
+	db.Insert(magazine1)
 }

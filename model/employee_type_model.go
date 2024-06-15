@@ -9,7 +9,7 @@ func (EmployeeType) TableName() string {
 	return "employee_types"
 }
 
-// テストデータ
+// データ
 func CreateEmployeeTypeData() {
 	employeeType1 := &EmployeeType{
 		EmployeeType: "店長",
