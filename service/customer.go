@@ -25,6 +25,25 @@ func(s *CustomerService) RegisterCustomer(customer model.Customer) error {
 	return nil
 }
 
+// お客様の一括登録
+func(s *CustomerService) RegisterCustomers(customers []model.Customer) error {
+	// for i := 0; i < len(customers); i++{
+	// // // UUIDを生成して追加
+	// // 	uid, err := uuid.NewRandom()
+	// // 	if err != nil {
+	// // 		return err
+	// // 	}
+	// // 	customers[i].CustomerUuid = uid.String() // UUIDを文字列に変換して代入
+	// }
+
+	err := model.RegisterCustomers(customers)
+	if err != nil {
+		log.Println("お客様情報の登録に失敗しました:", err)
+		return err
+	}
+	return nil
+}
+
 // 取得
 func FindCustomerByID(id int64) (*model.Magazine, error) {
 	group := new(model.Magazine)

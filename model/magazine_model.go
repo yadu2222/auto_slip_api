@@ -53,7 +53,7 @@ func CreateMagazineTestData(){
 	db.Insert(magazine1)
 }
 
-// RegisterMagazinesWithDupCheckAndInsert は重複チェックを行い、雑誌を登録する関数です
+// 重複チェックを行い、雑誌を登録する関数
 func RegisterMagazines(magazines []Magazine) error {
     for _, magazine := range magazines {
         exists, err := isMagazineExists(magazine)

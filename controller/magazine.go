@@ -8,6 +8,10 @@ import (
 
 	"auto_slip_api/model"
 	"auto_slip_api/service"
+
+	"encoding/json"
+	"auto_slip_api/csv"
+	
 )
 
 var magazineService = service.MagazineService{} // サービスの実体を作る。
@@ -38,3 +42,50 @@ func CreateMagazinesHandler(c *gin.Context) {
 		"srvResData": gin.H{},
 	})
 }
+
+
+
+// csvからの登録
+func CsvMagazinesRegister(c *gin.Context) {
+	// ファイルを受け取る
+	file, _, err := c.Request.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"srvResCode": 400,
+			"error":      "無効なデータです"})
+		return
+	}
+	defer file.Close()
+	// CSVファイルを読み込む
+	records, err := csv.ProcessUniCSVFile(file)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "csvの読み込みに失敗しました"})
+		return
+	}
+	// CSVをJSONに変換
+	byte, err := service.CsvToMagazineJson(records)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "csvの変換に失敗しました"})
+		return
+	}
+	// 変換したJSONを構造体にマッピング
+	var csvUtilMagazines []model.Magazine
+	if err := json.Unmarshal(byte, &csvUtilMagazines); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "マッピングに失敗しました"})
+		return
+	}
+	// 雑誌情報を登録
+	if err := magazineService.RegisterMagazines(csvUtilMagazines); err != nil {	// なげる
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の登録に失敗しました"})
+		return
+	}
+}
+

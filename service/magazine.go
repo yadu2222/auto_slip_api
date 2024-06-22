@@ -22,7 +22,7 @@ func(s *MagazineService) RegisterMagazines(magazines []model.Magazine) error {
 	}
 	err := model.RegisterMagazines(magazines)
 	if err != nil {
-		log.Println("グループの作成に失敗しました:", err)
+		log.Println("雑誌の登録に失敗しました:", err)
 		return err
 	}
 	return nil
