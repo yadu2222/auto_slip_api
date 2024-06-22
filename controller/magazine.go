@@ -13,10 +13,11 @@ import (
 var magazineService = service.MagazineService{} // サービスの実体を作る。
 
 // 雑誌登録
-func CreateMagazines(c *gin.Context) {
+func CreateMagazinesHandler(c *gin.Context) {
 	// マッピング
 	var magazines []model.Magazine
 	if err := c.ShouldBindBodyWith(&magazines,binding.JSON); err != nil {
+		print(err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"srvResCode": 400, 
 			"error": "リクエストデータが無効です",

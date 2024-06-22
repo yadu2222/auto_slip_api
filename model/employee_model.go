@@ -9,7 +9,7 @@ type Employee struct {
 	// pk primaryKey
 	// autoincr 自動インクリメント
 	// json json化する際のキー名
-	EmployeeUuid string  `xorm:"varchar(36) pk" json:"enployeeId"`
+	EmployeeUuid string  `xorm:"varchar(36) pk" json:"enployeeUUId"`
 	EmployeeName string  `xorm:"varchar(20) not null" json:"employeeName"`
 	EmployeeTypeId int  `xorm:"not null" json:"employeeType"`
 }

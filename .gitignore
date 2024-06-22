@@ -28,3 +28,5 @@ model/method_type.go
 go.work
 
 # End of https://www.toptal.com/developers/gitignore/api/go
+
+/assets/*

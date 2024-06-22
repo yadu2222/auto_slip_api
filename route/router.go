@@ -17,64 +17,65 @@ func GetRouter() (*gin.Engine, error) {
 			// 雑誌
 			magazine := v1.Group("/magazine")
 			{
-				magazine.GET("/", controller.CreateMagazines)    // 雑誌取得
-				magazine.POST("/register", controller.CreateMagazines)   // 雑誌登録
-				magazine.PUT("/", controller.CreateMagazines)    // 雑誌更新
-				magazine.DELETE("/", controller.CreateMagazines) // 雑誌削除
+				magazine.GET("/", controller.CreateMagazinesHandler)    // 雑誌取得
+				magazine.POST("/register", controller.CreateMagazinesHandler)   // 雑誌登録
+				magazine.PUT("/", controller.CreateMagazinesHandler)    // 雑誌更新
+				magazine.DELETE("/", controller.CreateMagazinesHandler) // 雑誌削除
 			}
 
 			// 顧客
 			customer := v1.Group("/customer")
 			{
-				customer.GET("/customer", controller.CreateMagazines)
+				customer.GET("/customer", controller.CreateMagazinesHandler)
 				customer.POST("/register", controller.RegisterCustomerHandler)
-				customer.PUT("/update", controller.CreateMagazines)
-				customer.DELETE("/delete", controller.CreateMagazines)
+				customer.PUT("/update", controller.CreateMagazinesHandler)
+				customer.DELETE("/delete", controller.CreateMagazinesHandler)
 			}
 
 			// 定期
 			regular := v1.Group("/regular")
 			{
-				regular.GET("/", controller.CreateMagazines)
-				regular.POST("/", controller.CreateMagazines)
-				regular.PUT("/", controller.CreateMagazines)
-				regular.DELETE("/", controller.CreateMagazines)
+				regular.GET("/", controller.CreateMagazinesHandler)
+				regular.POST("/", controller.CreateMagazinesHandler)
+				regular.PUT("/", controller.CreateMagazinesHandler)
+				regular.DELETE("/", controller.CreateMagazinesHandler)
 			}
 
 			// 数取り
 			counting := v1.Group("/counting")
 			{
-				counting.GET("/", controller.CreateMagazines)
-				counting.POST("/", controller.CreateMagazines)
-				counting.PUT("/", controller.CreateMagazines)
-				counting.DELETE("/", controller.CreateMagazines)
+				counting.GET("/", controller.CreateMagazinesHandler)
+				counting.POST("/", controller.CreateMagazinesHandler)
+				counting.PUT("/", controller.CreateMagazinesHandler)
+				counting.DELETE("/", controller.CreateMagazinesHandler)
 			}
 
 			// 請求
 			claim := v1.Group("/claim")
 			{
-				claim.GET("/", controller.CreateMagazines)
-				claim.POST("/", controller.CreateMagazines)
-				claim.PUT("/", controller.CreateMagazines)
-				claim.DELETE("/", controller.CreateMagazines)
+				claim.GET("/", controller.CreateMagazinesHandler)
+				claim.POST("/", controller.CreateMagazinesHandler)
+				claim.PUT("/", controller.CreateMagazinesHandler)
+				claim.DELETE("/", controller.CreateMagazinesHandler)
 			}
 
 			// 納品
 			delivery := v1.Group("/delivery")
 			{
-				delivery.GET("/", controller.CreateMagazines)
-				delivery.POST("/", controller.CreateMagazines)
-				delivery.PUT("/", controller.CreateMagazines)
-				delivery.DELETE("/", controller.CreateMagazines)
+				delivery.GET("/", controller.CreateMagazinesHandler)
+				delivery.POST("/", controller.CreateMagazinesHandler)
+				delivery.PUT("/", controller.CreateMagazinesHandler)
+				delivery.DELETE("/", controller.CreateMagazinesHandler)
 			}
 
+			// csvファイルを受け取ってDBに登録
+			// 使うの最初だけ
 			csv := v1.Group("/csv")
 			{
 				csv.POST("/magazines", controller.CsvMagazinesRegister)
-				csv.POST("/customers", controller.CreateMagazines)
-				csv.POST("/regulars", controller.CreateMagazines)
+				csv.POST("/customers", controller.CreateMagazinesHandler)
+				csv.POST("/regulars", controller.CreateMagazinesHandler)
 			}
-
 		}
 	
 

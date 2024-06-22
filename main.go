@@ -32,5 +32,7 @@ func main() {
 		ctx.String(200, "Hello お元気？")
 	})
 
-	router.Run() // サーバーを起動する
+
+	
+	router.Run("0.0.0.0:8080") // サーバーを起動する
 }
