@@ -91,3 +91,16 @@ func isMagazineExists(magazine Magazine) (bool, error) {
     }
     return count > 0, nil
 }
+
+// 雑誌コードから雑誌UUIDを取得
+func FindMagazineCode(code string) (Magazine, error) {
+    var magazine Magazine
+    session := db.Table("magazines")
+    _,err := session.Where("magazine_code = ?", code).Get(&magazine)
+    if err != nil {
+        print(err.Error())
+        return magazine, err
+    }
+    log.Printf("雑誌 %s のUUIDを取得しました", magazine.MagazineName)
+    return magazine, nil
+}

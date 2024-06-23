@@ -74,7 +74,7 @@ func GetRouter() (*gin.Engine, error) {
 			{
 				csv.POST("/magazines", controller.CsvMagazinesRegister)
 				csv.POST("/customers", controller.CsvCustomersRegister)
-				csv.POST("/regulars", controller.CreateMagazinesHandler)
+				csv.POST("/regulars", controller.CsvRegularRegister)
 			}
 		}
 	

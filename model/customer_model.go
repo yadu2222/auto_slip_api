@@ -64,7 +64,7 @@ func RegisterCustomers(customers []Customer) error {
 	return nil
 }
 
-// 指定された雑誌がすでに存在するかをチェックする関数
+// 指定された顧客がすでに存在するかをチェックする関数
 func isCustomerExists(customer Customer) (bool, error) {
 	// ここで具体的に雑誌の重複チェックを実装します
 	var count int64
@@ -74,6 +74,21 @@ func isCustomerExists(customer Customer) (bool, error) {
 		return false, err
 	}
 	return count > 0, nil
+}
+
+// 指定された顧客がすでに存在するかをチェックする関数
+func FindCustomerByID(uuid string) (bool, error) {
+	// ここで具体的に雑誌の重複チェックを実装します
+	// var count int64
+	var customer Customer
+	session := db.Table("customers")
+	_,err := session.Where("customer_uuid = ?", uuid).Get(&customer)
+	count, err := session.Count(&Customer{})
+	if err != nil {
+		return false, err
+	}
+	log.Println(customer.CustomerName)
+	return count < 0 , nil
 }
 
 // FK制約の追加

@@ -38,7 +38,7 @@ func CsvToMagazineJson(records [][]string) ([]byte, error) {
 }
 
 // csvデータをマップ>>JSONに変換する
-// 雑誌データ
+// 顧客データ
 func CsvToCustomerJSON(records [][]string) ([]byte, error) {
 	// some code
 	// データの変換と格納
@@ -67,6 +67,41 @@ func CsvToCustomerJSON(records [][]string) ([]byte, error) {
 			"tellAddress":  record[3],
 			"tellType":     tellType,
 			"note":         record[5],
+		}
+		convertedList = append(convertedList, customerMap)
+	}
+	// マップをJSONに変換
+	byte, err := json.Marshal(convertedList)
+	if err != nil {
+		fmt.Println(err)
+		
+	}
+	fmt.Println(string(byte))
+	return byte, nil
+
+}
+
+
+// csvデータをマップ>>JSONに変換する
+// 定期データ
+func CsvToRegularJSON(records [][]string) ([]byte, error) {
+	// some code
+	// データの変換と格納
+	var convertedList []map[string]interface{} // 変換後のリストを格納するスライス
+
+	for _, record := range records {
+		// methodTypeを整数に変換
+		quantity, err := strconv.Atoi(strings.TrimSpace(record[2]))
+		if err != nil {
+			quantity = 0 // デフォルト値を使用
+			fmt.Printf("methodType の変換に失敗しました: %v\n", record[2])
+		}
+
+		// マップを作成してリストに追加
+		customerMap := map[string]interface{}{
+			"customerUUID": record[0],
+			"magazineUUID": record[1],
+			"quantity": quantity,
 		}
 		convertedList = append(convertedList, customerMap)
 	}
