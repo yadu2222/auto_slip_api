@@ -17,8 +17,9 @@ func main() {
 	service.Init()
 	// service.DBInit()
 
-	router := gin.Default()                // ginの初期化
-	router.Use(cors.Default())             // corsを有効にする
+	router := gin.Default()    // ginの初期化
+	router.Use(cors.Default()) // corsを有効にする
+
 	router.Use(middleware.RecordUaAndTime) // middleware.RecordUaAndTimeを適用する
 
 	// router設定されたengineを受け取る。
@@ -32,7 +33,5 @@ func main() {
 		ctx.String(200, "Hello お元気？")
 	})
 
-
-	
-	router.Run("0.0.0.0:8080") // サーバーを起動する
+	router.Run() // サーバーを起動する
 }

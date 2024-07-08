@@ -24,7 +24,7 @@ func DBConnect() error {
 	var err error
 	db, err = xorm.NewEngine( // dbとエラーを取得
 		"mysql", // dbの種類"root:root@tcp(db:3306)/cgroup?charset=utf8"
-		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", dbUser, dbPass, dbHost, dbPort, dbDB), // 接続情報
+		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4", dbUser, dbPass, dbHost, dbPort, dbDB), // 接続情報
 	)
 	if err != nil { // エラー処理
 		// エラーが出たら終了する

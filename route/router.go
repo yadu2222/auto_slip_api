@@ -13,6 +13,8 @@ func GetRouter() (*gin.Engine, error) {
 	
 		v1 := router.Group("/v1")
 		{
+			// リクエストを鯖側で確かめるテスト用エンドポイント
+			v1.GET("/test/cfmreq", controller.CfmReq) // /v1/test
 
 			// 雑誌
 			magazine := v1.Group("/magazine")
@@ -45,7 +47,7 @@ func GetRouter() (*gin.Engine, error) {
 			counting := v1.Group("/counting")
 			{
 				counting.GET("/", controller.CreateMagazinesHandler)
-				counting.POST("/", controller.CreateMagazinesHandler)
+				counting.POST("/show", controller.CreateMagazinesHandler)
 				counting.PUT("/", controller.CreateMagazinesHandler)
 				counting.DELETE("/", controller.CreateMagazinesHandler)
 			}
@@ -75,6 +77,7 @@ func GetRouter() (*gin.Engine, error) {
 				csv.POST("/magazines", controller.CsvMagazinesRegister)
 				csv.POST("/customers", controller.CsvCustomersRegister)
 				csv.POST("/regulars", controller.CsvRegularRegister)
+				csv.POST("/counting", controller.CSVCountingHandler)
 			}
 		}
 	

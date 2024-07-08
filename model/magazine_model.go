@@ -14,8 +14,8 @@ type Magazine struct {
 	// pk primaryKey
 	// autoincr 自動インクリメント
 	// json json化する際のキー名
-	MagazineUuid string  `xorm:"varchar(36) pk" json:"magazineUUId"`
-	MagazineCode string  `xorm:"varchar(10) not null unique" json:"magazineCode"`
+	// MagazineUuid string  `xorm:"varchar(36) pk" json:"magazineUUId"`
+	MagazineCode string  `xorm:"varchar(10) pk" json:"magazineCode"`
 	MagazineName string `json:"magazineName"`
 	TakerUuid string `xorm:"varchar(36)" json:"takerUUID"`
 }
@@ -45,7 +45,7 @@ func CreateMagazineTestData(){
 	// ロールデータを作成
 
 	magazine1 := &Magazine{
-		MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
+		// MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
 		MagazineCode: "29934",
 		MagazineName: "少年ジャンプ",
 		TakerUuid: "c99cb6c4-42b9-4d6b-9884-ae6664f9df00",

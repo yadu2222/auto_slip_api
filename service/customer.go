@@ -60,7 +60,7 @@ func FindCustomerByID(id int64) (*model.Magazine, error) {
 }
 
 func UpdateCustomer(magazine *model.Magazine) error {
-	_, err := DbEngine.ID(magazine.MagazineUuid).Update(magazine)
+	_, err := DbEngine.ID(magazine.MagazineCode).Update(magazine)
 	if err != nil {
 		log.Println("お客様情報の更新に失敗しました:", err)
 		return err

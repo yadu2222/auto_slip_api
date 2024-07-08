@@ -28,15 +28,15 @@ func(s *RegularService) RegisterRegulars(regulars []model.Regular) error {
 		}
 		regulars[i].RegularUuid = uid.String() // UUIDを文字列に変換して代入
 	}
-	// 雑誌コードから雑誌IDを取得
-	for i := 0; i < len(regulars); i++ {
-		magazine, err := model.FindMagazineCode(regulars[i].MagazineUuid)
-		if err != nil {
-			log.Println("雑誌IDの取得に失敗しました:", err)
-			return err
-		}
-		regulars[i].MagazineUuid = magazine.MagazineUuid
-	}
+	// // 雑誌コードから雑誌IDを取得
+	// for i := 0; i < len(regulars); i++ {
+	// 	magazine, err := model.FindMagazineCode(regulars[i].MagazineUuid)
+	// 	if err != nil {
+	// 		log.Println("雑誌IDの取得に失敗しました:", err)
+	// 		return err
+	// 	}
+	// 	regulars[i].MagazineUuid = magazine.MagazineUuid
+	// }
 	err := model.RegisterRegulars(regulars)
 	if err != nil {
 		log.Println("定期情報の登録に失敗しました:", err)
@@ -61,11 +61,11 @@ func GetRegularByID(id int64) (*model.Magazine, error) {
 }
 
 // 更新
-func UpdateRegular(magazine *model.Magazine) error {
-	_, err := DbEngine.ID(magazine.MagazineUuid).Update(magazine)
-	if err != nil {
-		log.Println("グループの更新に失敗しました:", err)
-		return err
-	}
-	return nil
-}
+// func UpdateRegular(magazine *model.Magazine) error {
+// 	_, err := DbEngine.ID(magazine.MagazineUuid).Update(magazine)
+// 	if err != nil {
+// 		log.Println("グループの更新に失敗しました:", err)
+// 		return err
+// 	}
+// 	return nil
+// }

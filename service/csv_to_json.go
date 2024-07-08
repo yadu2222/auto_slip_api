@@ -4,10 +4,41 @@ import (
 	"encoding/json"
 	"fmt"
 
-	// "github.com/google/uuid"
+	"github.com/google/uuid"
 	"strconv"
 	"strings"
 )
+
+// csvデータをマップ>>JSONに変換する
+// 取次データ
+func CsvToAgencyJson(records [][]string) ([]byte, error) {
+	// some code
+	// データの変換と格納
+	var convertedList []map[string]string // 変換後のリストを格納するスライス
+	for _, record := range records {
+		// UUIDを生成して追加
+		uid, _ := uuid.NewRandom()
+		// マップを作成してリストに追加
+		magazineMap := map[string]string{
+			"countingUUID": uid.String(),
+			"magazineCode": record[5],
+			"magazineName": record[10],
+			"number":record[6],
+			"quenity":    record[11],
+		}
+		convertedList = append(convertedList, magazineMap)
+	}
+	// マップをJSONに変換
+	byte, err := json.Marshal(convertedList)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	fmt.Println(string(byte))
+	return byte, nil
+
+}
+
 
 // csvデータをマップ>>JSONに変換する
 // 雑誌データ
@@ -100,7 +131,7 @@ func CsvToRegularJSON(records [][]string) ([]byte, error) {
 		// マップを作成してリストに追加
 		customerMap := map[string]interface{}{
 			"customerUUID": record[0],
-			"magazineUUID": record[1],
+			"magazineCode": record[1],
 			"quantity": quantity,
 		}
 		convertedList = append(convertedList, customerMap)

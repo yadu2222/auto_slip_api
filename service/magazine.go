@@ -2,7 +2,7 @@ package service
 
 import (
 	"log"
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 	"auto_slip_api/model"
 )
 
@@ -12,14 +12,14 @@ type MagazineService struct{}
 func(s *MagazineService) RegisterMagazines(magazines []model.Magazine) error {
 	// 雑誌の数だけループ
 	// UUIDを生成して追加
-	for i := 0; i < len(magazines); i++{
-	// UUIDを生成して追加
-		uid, err := uuid.NewRandom()
-		if err != nil {
-			return err
-		}
-		magazines[i].MagazineUuid = uid.String() // UUIDを文字列に変換して代入
-	}
+	// for i := 0; i < len(magazines); i++{
+	// // UUIDを生成して追加
+	// 	uid, err := uuid.NewRandom()
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	magazines[i].MagazineUuid = uid.String() // UUIDを文字列に変換して代入
+	// }
 	err := model.RegisterMagazines(magazines)
 	if err != nil {
 		log.Println("雑誌の登録に失敗しました:", err)
@@ -44,7 +44,7 @@ func GetGroupByID(id int64) (*model.Magazine, error) {
 }
 
 func UpdateGroup(magazine *model.Magazine) error {
-	_, err := DbEngine.ID(magazine.MagazineUuid).Update(magazine)
+	_, err := DbEngine.ID(magazine.MagazineCode).Update(magazine)
 	if err != nil {
 		log.Println("グループの更新に失敗しました:", err)
 		return err

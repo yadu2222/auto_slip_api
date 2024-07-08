@@ -16,7 +16,7 @@ type Regular struct {
 	// autoincr 自動インクリメント
 	// json json化する際のキー名
 	RegularUuid  string `xorm:"varchar(36) pk" json:"regularUUID"` // 一意の値
-	MagazineUuid string `xorm:"varchar(36)" json:"magazineUUID"`   // 雑誌ID
+	MagazineCode string `xorm:"varchar(36)" json:"magazineCode"`   // 雑誌ID
 	CustomerUuid string `xorm:"varchar(36)" json:"customerUUID"`                      // 顧客コード
 	Quantity     int    `json:"quantity"`                     // 冊数
 }
@@ -68,7 +68,7 @@ func RegisterRegulars(regulars []Regular) error {
 func isRegularExists(regular Regular) (bool, error) {
 	// ここで具体的に雑誌の重複チェックを実装します
 	var count int64
-	session := db.Where("customer_uuid = ?", regular.CustomerUuid).And("magazine_uuid = ?", regular.MagazineUuid)
+	session := db.Where("customer_uuid = ?", regular.CustomerUuid).And("magazine_code = ?", regular.MagazineCode)
 	count, err := session.Count(&Regular{})
 	if err != nil {
 		return false, err
@@ -95,7 +95,7 @@ func InitRegularFK() error {
 func CreateRegularTestData() {
 	regular1 := &Regular{
 		RegularUuid:  "903e3147-1b8c-4e26-a5ee-f525a246e2df",
-		MagazineUuid: "8f1a4b8f-29ec-4704-b364-1d2d55532673",
+		MagazineCode: "29934",
 		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
 		Quantity:     1,
 	}

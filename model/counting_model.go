@@ -11,6 +11,7 @@ type CountingRegular struct {
 	TakeData time.Time `xorm:"DATETIME not null" json:"taskData"`
 }
 
+
 // テーブル名
 func (CountingRegular) TableName() string {
 	return "counting_regulars"
