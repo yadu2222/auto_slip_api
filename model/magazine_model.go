@@ -18,6 +18,7 @@ type Magazine struct {
 	MagazineCode string  `xorm:"varchar(10) pk" json:"magazineCode"`
 	MagazineName string `json:"magazineName"`
 	TakerUuid string `xorm:"varchar(36)" json:"takerUUID"`
+    TakerName string `xorm:"-" json:"takerName"`
 }
 
 func (Magazine) TableName() string {
@@ -103,4 +104,42 @@ func FindMagazineCode(code string) (Magazine, error) {
     }
     log.Printf("雑誌 %s のUUIDを取得しました", magazine.MagazineName)
     return magazine, nil
+}
+
+// 雑誌一覧を取得
+func GetMagazines() ([]Magazine, error) {
+    var magazines []Magazine
+
+
+    // なぜか作業者の名前がバインドできないのでここで再定義する
+    // TODO:なおす
+    type MagazineInfo struct{
+        MagazineName string
+        MagazineCode string
+        TakerUuid string
+        TakerName string
+    }
+    var magazineInfos []MagazineInfo
+
+    // dbに投げる
+    err := db.Table("magazines").
+    Join("left","employees","magazines.taker_uuid = employees.employee_uuid").
+    Select("magazines.magazine_code,magazines.magazine_name,magazines.taker_uuid, employees.employee_name as taker_name").
+    Find(&magazineInfos)
+    if err != nil {
+        log.Println("雑誌の取得に失敗しました:", err)
+        return nil, err
+    }
+    // 再バインド
+    for _, magazineInfo := range magazineInfos {
+        magazine := Magazine{
+            MagazineCode: magazineInfo.MagazineCode,
+            MagazineName: magazineInfo.MagazineName,
+            TakerUuid: magazineInfo.TakerUuid,
+            TakerName: magazineInfo.TakerName,
+        }
+        magazines = append(magazines, magazine)
+    }
+    // 返す
+    return magazines, nil
 }

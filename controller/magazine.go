@@ -43,6 +43,23 @@ func CreateMagazinesHandler(c *gin.Context) {
 	})
 }
 
+// 雑誌一覧を取得
+func GetMagazinesHandler(c *gin.Context) {
+	// 投げる
+	magazines, err := magazineService.GetMagazines()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResData": magazines,
+	})
+}
+
 
 
 // csvからの登録

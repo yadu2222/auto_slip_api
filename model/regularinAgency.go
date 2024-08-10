@@ -30,3 +30,4 @@ func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 
 	return regularAgencys, nil
 }
+

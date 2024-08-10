@@ -28,6 +28,23 @@ func(s *MagazineService) RegisterMagazines(magazines []model.Magazine) error {
 	return nil
 }
 
+// 雑誌一覧を取得
+func(s *MagazineService) GetMagazines() ([]model.Magazine, error) {
+	results, err := model.GetMagazines()
+	if err != nil {
+		log.Println("雑誌の取得に失敗しました:", err)
+		return nil, err
+	}
+	// var magazines []model.Magazine
+    // for _, result := range results {
+    //     magazine := result
+    //     magazine.TakerName = result.TakerName
+    //     magazines = append(magazines, magazine)
+    // }
+
+	return results, nil
+}
+
 // 取得
 func GetGroupByID(id int64) (*model.Magazine, error) {
 	group := new(model.Magazine)

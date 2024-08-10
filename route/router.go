@@ -17,16 +17,16 @@ func GetRouter() (*gin.Engine, error) {
 			v1.GET("/test/cfmreq", controller.CfmReq) // /v1/test
 
 			// 雑誌
-			magazine := v1.Group("/magazine")
+			magazine := v1.Group("/magazines")
 			{
-				magazine.GET("/", controller.CreateMagazinesHandler)    // 雑誌取得
+				magazine.GET("/magazines", controller.GetMagazinesHandler)    // 雑誌取得
 				magazine.POST("/register", controller.CreateMagazinesHandler)   // 雑誌登録
 				magazine.PUT("/", controller.CreateMagazinesHandler)    // 雑誌更新
 				magazine.DELETE("/", controller.CreateMagazinesHandler) // 雑誌削除
 			}
 
 			// 顧客
-			customer := v1.Group("/customer")
+			customer := v1.Group("/customers")
 			{
 				customer.GET("/customer", controller.CreateMagazinesHandler)
 				customer.POST("/register", controller.RegisterCustomerHandler)
@@ -35,7 +35,7 @@ func GetRouter() (*gin.Engine, error) {
 			}
 
 			// 定期
-			regular := v1.Group("/regular")
+			regular := v1.Group("/regulars")
 			{
 				regular.GET("/", controller.CreateMagazinesHandler)
 				regular.POST("/", controller.CreateMagazinesHandler)

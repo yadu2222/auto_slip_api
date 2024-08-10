@@ -11,6 +11,7 @@ type CountingService struct{}
 type Counting struct {
 	Agency model.Agency
 	RegularAgencys []model.RegularAgency
+	CountFlag bool
 }
 
 // かずをとるよ
@@ -28,9 +29,13 @@ func(s *CountingService) MagazineCounting(agencyList []model.Agency) ([]Counting
         counting := Counting{
             Agency:        agency,
             RegularAgencys: countingList,
+			CountFlag:     agency.Quenity <= len(countingList),
         }
 		// スライスの追加
-		countings = append(countings, counting)	
+
+		if(countingList != nil){
+			countings = append(countings, counting)	
+		}
 	}
 	return countings, nil
 }
