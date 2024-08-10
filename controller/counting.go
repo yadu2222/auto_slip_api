@@ -57,14 +57,14 @@ func CSVCountingHandler(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"srvResCode": 500,
-			"error":      "お客様情報の登録に失敗しました",
+			"error":      "数取りに失敗しました",
 		})
 		return
 	}
 	// 成功レスポンス
 	c.JSON(http.StatusCreated, gin.H{
 		"srvResCode": 200,
-		"srvResMsg":  "お客様情報の登録に成功しました",
+		"srvResMsg":  "数取りに成功しました",
 		"srvResData": countingList,
 	})
 }
