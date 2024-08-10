@@ -7,7 +7,6 @@ import (
 // "fmt"
 // "math/rand"
 // "time"
-// TODO: 外部キー制約
 // groupeテーブル
 // typeで型定義
 type Regular struct {
@@ -25,6 +24,60 @@ func (Regular) TableName() string {
 	return "regulars"
 }
 
+// FK制約の追加
+func InitRegularFK() error {
+	// magazine_code
+	_, err := db.Exec("ALTER TABLE regulars ADD FOREIGN KEY (magazine_code) REFERENCES magazines(magazine_code) ON DELETE CASCADE ON UPDATE CASCADE")
+	if err != nil {
+		return err
+	}
+	// // customer_uuid
+	_, err = db.Exec("ALTER TABLE regulars ADD FOREIGN KEY (customer_uuid) REFERENCES customers(customer_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CreateRegularTestData() {
+	regular1 := &Regular{
+		RegularUuid:  "903e3147-1b8c-4e26-a5ee-f525a246e2df",
+		MagazineCode: "29934",
+		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
+		Quantity:     1,
+	}
+	db.Insert(regular1)
+}
+
+
+
+// 定期情報の登録
+func RegisterRegular(regular Regular) error {
+	exists, err := isRegularExists(regular)
+	if err != nil {
+		// エラーが発生した場合、ログを出力して処理を継続
+		log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid,err)
+		return err
+	}
+	if exists {
+		// 重複がある場合はログを出力して処理を継続
+		log.Printf("%sはすでに登録されています", regular.CustomerUuid)
+		return nil
+	}
+
+	// 定期を登録
+	_, err = db.Insert(&regular)
+	if err != nil {
+		// エラーが発生した場合、ログを出力して処理を継続します
+		log.Printf("%sの登録中にエラーが発生しました: %v", regular.CustomerUuid, err)
+		// return err
+	}
+	log.Printf("%sを登録しました", regular.CustomerUuid)
+	return nil
+}
+
+// 定期を一括登録
 func RegisterRegulars(regulars []Regular) error {
 	for _, regular := range regulars {
 		exists, err := isRegularExists(regular)
@@ -39,27 +92,15 @@ func RegisterRegulars(regulars []Regular) error {
 			continue
 		}
 
-		// // こきゃくIDちぇっく
-		// check, err := FindCustomerByID(regular.CustomerUuid)
-		// if err != nil {
-		// 	// エラーが発生した場合、ログを出力して処理を継続
-		// 	log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid, err)
-		// 	return err
-		// }
-		// if check {
-		// 	// 重複がある場合はログを出力して処理を継続
-		// 	log.Printf("%sは登録がありません", regular.CustomerUuid)
-		// 	continue
-		// }
-
 		// 定期を登録
 		_, err = db.Insert(&regular)
 		if err != nil {
 			// エラーが発生した場合、ログを出力して処理を継続します
 			log.Printf("%sの登録中にエラーが発生しました: %v", regular.CustomerUuid, err)
-			return err
+			// return err
+		}else{
+			log.Printf("%sを登録しました", regular.CustomerUuid)
 		}
-		log.Printf("%sを登録しました", regular.CustomerUuid)
 	}
 	return nil
 }
@@ -76,28 +117,34 @@ func isRegularExists(regular Regular) (bool, error) {
 	return count > 0, nil
 }
 
-// FK制約の追加
-func InitRegularFK() error {
-	// magazine_uuid
-	// _, err := db.Exec("ALTER TABLE regulars ADD FOREIGN KEY (magazine_uuid) REFERENCES magazines(magazine_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
-	// if err != nil {
-	// 	return err
-	// }
-	// // customer_uuid
-	// _, err = db.Exec("ALTER TABLE regulars ADD FOREIGN KEY (customer_uuid) REFERENCES customers(customer_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
-	// if err != nil {
-	// 	return err
-	// }
+// 定期情報を一覧取得
+func GetRegulars() ([]Regular, error) {
+	var regulars []Regular
 
-	return nil
-}
-
-func CreateRegularTestData() {
-	regular1 := &Regular{
-		RegularUuid:  "903e3147-1b8c-4e26-a5ee-f525a246e2df",
-		MagazineCode: "29934",
-		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
-		Quantity:     1,
+	err := db.Find(&regulars)
+	if err != nil {
+		return nil, err
 	}
-	db.Insert(regular1)
+	return regulars, nil
 }
+
+// 雑誌を主キーに定期を一覧取得
+func FindRegularByMagazine(magazineUuid string) ([]Regular, error) {
+	var regulars []Regular
+	err := db.Where("magazine_code = (?)", magazineUuid).Find(&regulars)
+	if err != nil {
+		return nil, err
+	}
+	return regulars, nil
+}
+
+// 顧客を主キーに定期を一覧取得
+func FindRegularByCustomer(customerUuid string) ([]Regular, error) {
+	var regulars []Regular
+	err := db.Where("customer_uuid = (?)", customerUuid).Find(&regulars)
+	if err != nil {
+		return nil, err
+	}
+	return regulars, nil
+}
+

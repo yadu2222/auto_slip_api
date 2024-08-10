@@ -39,13 +39,13 @@ func(s *MagazineService) GetMagazines() ([]model.Magazine, error) {
 }
 
 // 雑誌を削除
-func(s *MagazineService) DeleteMagazine(magazineCode string) error {
-	err := model.DeleteMagazine(magazineCode)
+func(s *MagazineService) DeleteMagazine(magazineCode string) (*model.Magazine, error) {
+	magazine, err := model.DeleteMagazine(magazineCode)
 	if err != nil {
 		log.Println("雑誌の削除に失敗しました:", err)
-		return err
+		return nil, err
 	}
-	return nil
+	return magazine, nil
 }
 
 // 取得

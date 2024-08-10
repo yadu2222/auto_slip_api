@@ -28,6 +28,41 @@ func (Customer) TableName() string {
 	return "customers"
 }
 
+// FK制約の追加
+func InitCustomerFK() error {
+
+	_, err := db.Exec("ALTER TABLE customers ALTER COLUMN tell_address SET DEFAULT NULL")
+	if err != nil {
+		return err
+	}
+	
+	// // methodtype
+	_, err = db.Exec("ALTER TABLE customers ADD FOREIGN KEY (method_type) REFERENCES method_types(method_id) ON DELETE CASCADE ON UPDATE CASCADE")
+	if err != nil {
+		return err
+	}
+	
+	// // telltype
+	_, err = db.Exec("ALTER TABLE customers ADD FOREIGN KEY (tell_type) REFERENCES tell_types(tell_type_id) ON DELETE CASCADE ON UPDATE CASCADE")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// テストデータ
+func CreateCustomerTestData() {
+	customer1 := &Customer{
+		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
+		CustomerName: "ほげ岡",
+		MethodType:   1,
+		TellAddress:  "090-1234-5678",
+		TellType:     1,
+		Note:         "ほげほげ鳴いてます",
+	}
+	db.Insert(customer1)
+}
+
 // 顧客一覧を取得
 func GetCustomers() ([]Customer, error) {
 	var customers []Customer
@@ -56,7 +91,7 @@ func RegisterCustomers(customers []Customer) error {
 	for _, customer := range customers {
 
 		if(customer.TellAddress != ""){
-			exists, err := FindCustomerByCsvID(customer.CsvId)
+			exists, err := ExistsustomerByCsvID(customer.CsvId)
 			if err != nil {
 				// エラーが発生した場合、ログを出力して処理を継続
 				log.Printf("%s様の重複チェック中にエラーが発生しました: %v", customer.CustomerName, err)
@@ -93,10 +128,32 @@ func isCustomerExists(customer Customer) (bool, error) {
 	return count > 0, nil
 }
 
+// uuidから顧客を取得
+func FindCustomerByID(uuid string) (Customer, error) {
+	var customer Customer
+	session := db.Table("customers")
+	_, err := session.Where("customer_uuid = ?", uuid).Get(&customer)
+	if err != nil {
+		return customer, err
+	}
+	return customer, nil
+}
+
+// csv_idから顧客を取得
+func FindCustomerByCsvID(csvid string) (Customer, error) {
+	var customer Customer
+	session := db.Table("customers")
+	_, err := session.Where("csv_id = ?", csvid).Get(&customer)
+	if err != nil {
+		return customer, err
+	}
+	return customer, nil
+}
+
 // uuidから顧客のidをチェック
 
 // 指定された顧客がすでに存在するかをチェックする関数
-func FindCustomerByCsvID(csvid int) (bool, error) {
+func ExistsustomerByCsvID(csvid int) (bool, error) {
     var customer Customer
     session := db.Table("customers")
     // データが存在するかどうかをチェック
@@ -113,36 +170,4 @@ func FindCustomerByCsvID(csvid int) (bool, error) {
     return false, nil
 }
 
-// FK制約の追加
-func InitCustomerFK() error {
 
-	_, err := db.Exec("ALTER TABLE customers ALTER COLUMN tell_address SET DEFAULT NULL")
-	if err != nil {
-		return err
-	}
-	
-	// // methodtype
-	// _, err := db.Exec("ALTER TABLE customers ADD FOREIGN KEY (method_type) REFERENCES method_types(method_id) ON DELETE CASCADE ON UPDATE CASCADE")
-	// if err != nil {
-	// 	return err
-	// }
-	// // telltype
-	// _, err = db.Exec("ALTER TABLE customers ADD FOREIGN KEY (tell_type) REFERENCES tell_types(tell_type_id) ON DELETE CASCADE ON UPDATE CASCADE")
-	// if err != nil {
-	// 	return err
-	// }
-	return nil
-}
-
-// テストデータ
-func CreateCustomerTestData() {
-	customer1 := &Customer{
-		CustomerUuid: "d38678b7-b540-4893-96aa-a3f51cbb07f2",
-		CustomerName: "ほげ岡",
-		MethodType:   1,
-		TellAddress:  "090-1234-5678",
-		TellType:     1,
-		Note:         "ほげほげ鳴いてます",
-	}
-	db.Insert(customer1)
-}

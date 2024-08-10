@@ -46,11 +46,13 @@ func CreateMagazinesHandler(c *gin.Context) {
 // 雑誌を削除
 func DeleteMagazineHandler(c *gin.Context) {
 	// パラメータから雑誌コードを取得
-	magazineUUID := c.Param("invite_code")
+	magazineCode := c.Param("magazine_code")
 
 	// 雑誌コードから雑誌を削除
 	// 投げる
-	if err := magazineService.DeleteMagazine(magazineUUID); err != nil {
+	magazine ,err := magazineService.DeleteMagazine(magazineCode); 
+	
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"srvResCode": 500, 
 			"error": "雑誌情報の削除に失敗しました"})
@@ -60,7 +62,9 @@ func DeleteMagazineHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"srvResCode": 200,
 		"srvResMsg":  "雑誌情報の削除に成功しました",
-		"srvResData": gin.H{},
+		"srvResData": gin.H{
+			"magazine": magazine,
+		},
 	})
 }
 
