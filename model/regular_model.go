@@ -39,20 +39,20 @@ func RegisterRegulars(regulars []Regular) error {
 			continue
 		}
 
-		// こきゃくIDちぇっく
-		check, err := FindCustomerByID(regular.CustomerUuid)
-		if err != nil {
-			// エラーが発生した場合、ログを出力して処理を継続
-			log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid, err)
-			return err
-		}
-		if check {
-			// 重複がある場合はログを出力して処理を継続
-			log.Printf("%sは登録がありません", regular.CustomerUuid)
-			continue
-		}
+		// // こきゃくIDちぇっく
+		// check, err := FindCustomerByID(regular.CustomerUuid)
+		// if err != nil {
+		// 	// エラーが発生した場合、ログを出力して処理を継続
+		// 	log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid, err)
+		// 	return err
+		// }
+		// if check {
+		// 	// 重複がある場合はログを出力して処理を継続
+		// 	log.Printf("%sは登録がありません", regular.CustomerUuid)
+		// 	continue
+		// }
 
-		// お客様を登録
+		// 定期を登録
 		_, err = db.Insert(&regular)
 		if err != nil {
 			// エラーが発生した場合、ログを出力して処理を継続します

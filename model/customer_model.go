@@ -20,14 +20,30 @@ type Customer struct {
 	MethodType   int    `json:"methodType"`                         // 処理のタイプ
 	TellAddress  string `json:"tellAddress"`          //電話番号	// unique検討
 	TellType     int    `json:"tellType"`                           // 冊数
-	Note         string `json:"note"`                               // 冊数
+	Note         string `json:"note"`                              // 冊数
+	CsvId		int    	`json:"csvId"`                             // csv形式のときに使用していたid　nullを許容
 }
 
 func (Customer) TableName() string {
 	return "customers"
 }
 
+// 顧客一覧を取得
+func GetCustomers() ([]Customer, error) {
+	var customers []Customer
+	err := db.Find(&customers)
+	if err != nil {
+		return nil, err
+	}
+	return customers, nil
+}
+
+// お客様を登録する関数
 func RegisterCustomer(customer Customer) error {
+	// // 電話番号の重複を確認
+	// exists, err := isCustomerExists(customer)
+
+
 	_, err := db.Insert(customer)
 	if err != nil {
 		return err
@@ -35,11 +51,12 @@ func RegisterCustomer(customer Customer) error {
 	return nil
 }
 
+// お客様を登録する関数
 func RegisterCustomers(customers []Customer) error {
 	for _, customer := range customers {
 
 		if(customer.TellAddress != ""){
-			exists, err := isCustomerExists(customer)
+			exists, err := FindCustomerByCsvID(customer.CsvId)
 			if err != nil {
 				// エラーが発生した場合、ログを出力して処理を継続
 				log.Printf("%s様の重複チェック中にエラーが発生しました: %v", customer.CustomerName, err)
@@ -64,7 +81,7 @@ func RegisterCustomers(customers []Customer) error {
 	return nil
 }
 
-// 指定された顧客がすでに存在するかをチェックする関数
+// 指定された顧客がすでに存在するかを電話番号でチェックする関数
 func isCustomerExists(customer Customer) (bool, error) {
 	// ここで具体的に雑誌の重複チェックを実装します
 	var count int64
@@ -76,19 +93,24 @@ func isCustomerExists(customer Customer) (bool, error) {
 	return count > 0, nil
 }
 
+// uuidから顧客のidをチェック
+
 // 指定された顧客がすでに存在するかをチェックする関数
-func FindCustomerByID(uuid string) (bool, error) {
-	// ここで具体的に雑誌の重複チェックを実装します
-	// var count int64
-	var customer Customer
-	session := db.Table("customers")
-	_,err := session.Where("customer_uuid = ?", uuid).Get(&customer)
-	count, err := session.Count(&Customer{})
-	if err != nil {
-		return false, err
-	}
-	log.Println(customer.CustomerName)
-	return count < 0 , nil
+func FindCustomerByCsvID(csvid int) (bool, error) {
+    var customer Customer
+    session := db.Table("customers")
+    // データが存在するかどうかをチェック
+    exists, err := session.Where("csv_id = ?", csvid).Get(&customer)
+    if err != nil {
+        return false, err
+    }
+    if exists {
+        // 顧客が存在する場合
+        log.Println("顧客名:", customer.CustomerName)
+        return true, nil
+    }
+    // 顧客が存在しない場合
+    return false, nil
 }
 
 // FK制約の追加

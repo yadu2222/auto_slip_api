@@ -86,10 +86,40 @@ go mod tidy
 
 </details>
 
+### 顧客
+<details>
+  <summary>顧客一覧取得</summary>
 
+- **URL:** `/v1/customers/customers`
+- **メソッド:** GET
+- **説明:** 顧客情報を一覧取得
+- **リクエスト:**
+  - ヘッダー: application/json
 
+- **レスポンス:**
+  - ステータスコード: 200 OK
+    - ボディ:
+
+      ```json
+      {
+        "srvResCode": 200,
+        "srvResData": [
+          {
+            "customerUUId": "0038eae7-56ee-4ff3-bba5-380de72fb3ba",
+            "customerName": "室谷",
+            "methodType": 1,
+            "tellAddress": "54-0854",
+            "tellType": 1,
+            "note": "",
+            "csvId": 162
+          },]
+      }
+      ```
+
+</details>
 
 ### テンプレート
+
 <details>
   <summary>タイトル</summary>
 

@@ -35,14 +35,17 @@ func(s *MagazineService) GetMagazines() ([]model.Magazine, error) {
 		log.Println("雑誌の取得に失敗しました:", err)
 		return nil, err
 	}
-	// var magazines []model.Magazine
-    // for _, result := range results {
-    //     magazine := result
-    //     magazine.TakerName = result.TakerName
-    //     magazines = append(magazines, magazine)
-    // }
-
 	return results, nil
+}
+
+// 雑誌を削除
+func(s *MagazineService) DeleteMagazine(magazineCode string) error {
+	err := model.DeleteMagazine(magazineCode)
+	if err != nil {
+		log.Println("雑誌の削除に失敗しました:", err)
+		return err
+	}
+	return nil
 }
 
 // 取得

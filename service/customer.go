@@ -67,3 +67,16 @@ func UpdateCustomer(magazine *model.Magazine) error {
 	}
 	return nil
 }
+
+// 顧客一覧を取得
+func(s *CustomerService) GetCustomers() ([]model.Customer, error) {
+
+	var customers []model.Customer
+
+	customers, err := model.GetCustomers()
+	if err != nil {
+		log.Println("お客様情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	return customers, nil
+}

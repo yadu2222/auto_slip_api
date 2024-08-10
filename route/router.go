@@ -28,7 +28,7 @@ func GetRouter() (*gin.Engine, error) {
 			// 顧客
 			customer := v1.Group("/customers")
 			{
-				customer.GET("/customer", controller.CreateMagazinesHandler)
+				customer.GET("/customers", controller.GetCustomersHandler)
 				customer.POST("/register", controller.RegisterCustomerHandler)
 				customer.PUT("/update", controller.CreateMagazinesHandler)
 				customer.DELETE("/delete", controller.CreateMagazinesHandler)

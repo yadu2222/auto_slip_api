@@ -90,14 +90,26 @@ func CsvToCustomerJSON(records [][]string) ([]byte, error) {
 			fmt.Printf("tellType の変換に失敗しました: %v\n", record[4])
 		}
 
+		// csvidを整数に変換
+		csvId, err := strconv.Atoi(strings.TrimSpace(record[0]))
+		if err != nil {
+			csvId = 0 // デフォルト値を使用
+			fmt.Printf("csvId の変換に失敗しました: %v\n", record[0])
+		}
+		
+
+		// customerUUIDを生成
+		uid, _ := uuid.NewRandom()
+
 		// マップを作成してリストに追加
 		customerMap := map[string]interface{}{
-			"customerUUID": record[0],
+			"customerUUID": uid,
 			"customerName": record[1],
 			"methodType":   methodType,
 			"tellAddress":  record[3],
 			"tellType":     tellType,
 			"note":         record[5],
+			"csvId":        csvId,
 		}
 		convertedList = append(convertedList, customerMap)
 	}

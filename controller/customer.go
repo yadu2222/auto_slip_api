@@ -44,6 +44,24 @@ func RegisterCustomerHandler(c *gin.Context) {
 	})
 }
 
+// 顧客一覧を取得
+func GetCustomersHandler(c *gin.Context) {
+	// 投げる
+	customers, err := customerService.GetCustomers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "顧客情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "顧客情報の取得に成功しました",
+		"srvResData": customers,
+	})
+}
+
 // csvからの登録
 func CsvCustomersRegister(c *gin.Context) {
 	// ファイルを受け取る
@@ -80,11 +98,11 @@ func CsvCustomersRegister(c *gin.Context) {
 			"error":      "マッピングに失敗しました"})
 		return
 	}
-	// 雑誌情報を登録
+	// 顧客情報を登録
 	if err := customerService.RegisterCustomers(csvUtilCustomers); err != nil {	// なげる
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"srvResCode": 500,
-			"error":      "雑誌情報の登録に失敗しました"})
+			"error":      "顧客情報の登録に失敗しました"})
 		return
 	}
 }

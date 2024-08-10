@@ -143,3 +143,12 @@ func GetMagazines() ([]Magazine, error) {
     // 返す
     return magazines, nil
 }
+
+// 雑誌を削除
+func DeleteMagazine(magazineCode string) error {
+    _, err := db.Where("magazine_code = ?", magazineCode).Delete(&Magazine{})
+    if err != nil {
+        return err
+    }
+    return nil
+}
