@@ -47,27 +47,24 @@ func(s *MagazineService) DeleteMagazine(magazineCode string) (*model.Magazine, e
 	}
 	return magazine, nil
 }
-
-// 取得
-func GetGroupByID(id int64) (*model.Magazine, error) {
-	group := new(model.Magazine)
-	has, err := DbEngine.ID(id).Get(group)
+// 雑誌コードで検索
+func(s *MagazineService) FindMagazineByCode(magazineCode string) ([]model.Magazine, error) {
+	
+	magazine, err := model.FindMagazineCode(magazineCode)
 	if err != nil {
-		log.Println("グループの取得に失敗しました:", err)
+		log.Println("雑誌情報の取得に失敗しました:", err)
 		return nil, err
 	}
-	if !has {
-		log.Println("指定されたIDのグループは存在しません")
-		return nil, nil
-	}
-	return group, nil
+	return magazine, nil
 }
 
-func UpdateGroup(magazine *model.Magazine) error {
-	_, err := DbEngine.ID(magazine.MagazineCode).Update(magazine)
+// 雑誌名で検索
+func(s *MagazineService) FindMagazineByName(magazineName string) ([]model.Magazine, error) {
+	
+	magazine, err := model.FindMagazineName(magazineName)
 	if err != nil {
-		log.Println("グループの更新に失敗しました:", err)
-		return err
+		log.Println("雑誌情報の取得に失敗しました:", err)
+		return nil, err
 	}
-	return nil
+	return magazine, nil
 }

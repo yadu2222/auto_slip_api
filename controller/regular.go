@@ -125,3 +125,25 @@ func CsvRegularRegister(c *gin.Context) {
 		return
 	}
 }
+
+// 定期情報の削除
+func DeleteRegularHandler(c *gin.Context) {
+	// パラメータからIDを取得
+	regularID := c.Param("regular_uuid")
+	// 投げる
+	regular, err := regularService.DeleteRegular(regularID); 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "定期情報の削除に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "定期情報の削除に成功しました",
+		"srvResData": gin.H{
+			"regular_uuid": regular.RegularUuid,
+		},
+	})
+}

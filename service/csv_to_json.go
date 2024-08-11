@@ -14,17 +14,24 @@ import (
 func CsvToAgencyJson(records [][]string) ([]byte, error) {
 	// some code
 	// データの変換と格納
-	var convertedList []map[string]string // 変換後のリストを格納するスライス
+	var convertedList []map[string]interface{} // 変換後のリストを格納するスライス
+	
+	
 	for _, record := range records {
 		// UUIDを生成して追加
 		uid, _ := uuid.NewRandom()
+		quantity,err := strconv.Atoi(record[11])
+		if err != nil {
+			fmt.Println(err)
+			quantity = 0
+		}
 		// マップを作成してリストに追加
-		magazineMap := map[string]string{
+		magazineMap := map[string]interface{}{
 			"countingUUID": uid.String(),
 			"magazineCode": record[5],
 			"magazineName": record[10],
 			"number":record[6],
-			"quenity":    record[11],
+			"quantity":  quantity,
 		}
 		convertedList = append(convertedList, magazineMap)
 	}

@@ -63,18 +63,17 @@ func MigrationTable() error {
 			fmt.Println("Failed to sync database.", err)
 			return err
 		}
+		// FK
+		err = initFK()
+		if err != nil {
+			fmt.Println("Failed to set foreign key.", err)
+			return err
+		}
+
+		// サンプルデータ作成
+		RegisterSample()
 
 	}
-
-	// FK
-	err := initFK()
-	if err != nil {
-		fmt.Println("Failed to set foreign key.", err)
-		return err
-	}
-
-	// サンプルデータ作成
-	RegisterSample()
 
 	return nil
 }
@@ -128,19 +127,18 @@ func initFK() error {
 // 外部キーの参照先テーブルを先に登録する必要がある。
 func RegisterSample() {
 	// 基本データ
-	CreateEmployeeTypeData()	// 従業員種別
-	CreateTellTypeTestData()	// 連絡方法
-	CreateMethodTypeTestData()	// 支払方法
+	CreateEmployeeTypeData()   // 従業員種別
+	CreateTellTypeTestData()   // 連絡方法
+	CreateMethodTypeTestData() // 支払方法
 
 	// テストデータ
-	CreateEmployeeTestData()	// 従業員
-	CreateMagazineTestData()	// 雑誌
-	CreateCustomerTestData()	// 顧客
-	CreateRegularTestData()		// 定期購読
-	CreateCountingRegularTestData()	// 集計定期購読
-	CreateDeliveryLogTestData()		// 納品履歴
-	CreateInvoiceLogTestData()		// 請求履歴
-	CreateOparateLogTestData()		// 操作履歴
+	CreateEmployeeTestData()        // 従業員
+	CreateMagazineTestData()        // 雑誌
+	CreateCustomerTestData()        // 顧客
+	CreateRegularTestData()         // 定期購読
+	CreateCountingRegularTestData() // 集計定期購読
+	CreateDeliveryLogTestData()     // 納品履歴
+	CreateInvoiceLogTestData()      // 請求履歴
+	CreateOparateLogTestData()      // 操作履歴
 
-	
 }

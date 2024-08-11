@@ -29,6 +29,7 @@ func(s *RegularService) RegisterRegular(regular model.Regular) error {
 	return nil
 }
 
+
 // 定期の一括登録
 func (s *RegularService) RegisterRegulars(regulars []model.Regular) error {
 	for i := 0; i < len(regulars); i++ {
@@ -88,7 +89,7 @@ type RegularCustomerInfo struct {
 type RegularMagazineInfo struct {
 	RegularUuid string   `json:"regularUUID"`      // 定期情報ID
 	Quantity    int      `json:"quantity"`      // 冊数
-	Magaine      model.Magazine	`json:"magazine"` // 雑誌情報
+	Magaine     model.Magazine	`json:"magazine"` // 雑誌情報
 }
 
 // viewみたいな構造体
@@ -178,7 +179,7 @@ func (s *RegularService) FindCustomerRegulars() ([]FindCustomerRegular, error) {
 			regularInfos = append(regularInfos, RegularMagazineInfo{
 				RegularUuid: regular.RegularUuid,
 				Quantity:    regular.Quantity,
-				Magaine:	magazine,
+				Magaine:	magazine[0],
 			})
 
 		}
@@ -192,13 +193,12 @@ func (s *RegularService) FindCustomerRegulars() ([]FindCustomerRegular, error) {
 	return results, nil
 }
 
-
-// 更新
-// func UpdateRegular(magazine *model.Magazine) error {
-// 	_, err := DbEngine.ID(magazine.MagazineUuid).Update(magazine)
-// 	if err != nil {
-// 		log.Println("グループの更新に失敗しました:", err)
-// 		return err
-// 	}
-// 	return nil
-// }
+// 削除
+func(s *RegularService) DeleteRegular(regularUuid string) (*model.Regular, error) {
+	regular, err := model.DeleteRegular(regularUuid)
+	if err != nil {
+		log.Println("定期情報の削除に失敗しました:", err)
+		return nil, err
+	}
+	return regular, nil
+}

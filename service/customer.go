@@ -80,3 +80,13 @@ func(s *CustomerService) GetCustomers() ([]model.Customer, error) {
 	}
 	return customers, nil
 }
+
+// 顧客を削除
+func(s *CustomerService) DeleteCustomer(customerUuid string) (*model.Customer, error) {
+	customer, err := model.DeleteCustomer(customerUuid)
+	if err != nil {
+		log.Println("お客様情報の削除に失敗しました:", err)
+		return nil, err
+	}
+	return customer, nil
+}

@@ -44,6 +44,26 @@ func RegisterCustomerHandler(c *gin.Context) {
 	})
 }
 
+// お客様削除
+func DeleteCustomerHandler(c *gin.Context) {
+	// パラメータからお客様IDを取得
+	customerID := c.Param("customer_uuid")
+	// 投げる
+	customer ,err := customerService.DeleteCustomer(customerID); 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500, 
+			"error": "お客様情報の削除に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "お客様情報の削除に成功しました",
+		"srvResData": customer,
+	})
+}
+
 // 顧客一覧を取得
 func GetCustomersHandler(c *gin.Context) {
 	// 投げる

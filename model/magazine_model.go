@@ -95,16 +95,29 @@ func isMagazineExists(magazine Magazine) (bool, error) {
 }
 
 // 雑誌コードから雑誌雑誌を取得
-func FindMagazineCode(code string) (Magazine, error) {
-	var magazine Magazine
+func FindMagazineCode(code string) ([]Magazine, error) {
+	var magazine []Magazine
 	session := db.Table("magazines")
-	_, err := session.Where("magazine_code = ?", code).Get(&magazine)
+	err := session.Where("magazine_code like ?", "%"+code+"%").Find(&magazine)
 	if err != nil {
 		print(err.Error())
 		return magazine, err
 	}
-	log.Printf("雑誌 %s を取得しました", magazine.MagazineName)
+	// log.Printf("雑誌 %s を取得しました", magazine.MagazineName)
 	return magazine, nil
+}
+
+// 雑誌名で部分一致検索
+func FindMagazineName(name string) ([]Magazine, error) {
+	var magazines []Magazine
+	session := db.Table("magazines")
+	err := session.Where("magazine_name like ?", "%"+name+"%").Find(&magazines)
+	if err != nil {
+		print(err.Error())
+		return magazines, err
+	}
+	log.Printf("雑誌 %s を取得しました", name)
+	return magazines, nil
 }
 
 // 雑誌一覧を取得

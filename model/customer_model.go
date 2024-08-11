@@ -41,7 +41,7 @@ func InitCustomerFK() error {
 	if err != nil {
 		return err
 	}
-	
+
 	// // telltype
 	_, err = db.Exec("ALTER TABLE customers ADD FOREIGN KEY (tell_type) REFERENCES tell_types(tell_type_id) ON DELETE CASCADE ON UPDATE CASCADE")
 	if err != nil {
@@ -168,6 +168,19 @@ func ExistsustomerByCsvID(csvid int) (bool, error) {
     }
     // 顧客が存在しない場合
     return false, nil
+}
+
+// お客様を削除する関数
+func DeleteCustomer(customerUuid string) (*Customer, error) {
+	customer, err := FindCustomerByID(customerUuid)
+	if err != nil {
+		return nil, err
+	}
+	_, err = db.Delete(&customer)
+	if err != nil {
+		return nil, err
+	}
+	return &customer, nil
 }
 
 

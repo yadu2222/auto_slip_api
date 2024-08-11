@@ -2,16 +2,15 @@ package controller
 
 import (
 	"net/http"
-	
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
 	"auto_slip_api/model"
 	"auto_slip_api/service"
 
-	"encoding/json"
 	"auto_slip_api/csv"
-	
+	"encoding/json"
 )
 
 var magazineService = service.MagazineService{} // サービスの実体を作る。
@@ -20,19 +19,19 @@ var magazineService = service.MagazineService{} // サービスの実体を作�
 func CreateMagazinesHandler(c *gin.Context) {
 	// マッピング
 	var magazines []model.Magazine
-	if err := c.ShouldBindBodyWith(&magazines,binding.JSON); err != nil {
+	if err := c.ShouldBindBodyWith(&magazines, binding.JSON); err != nil {
 		print(err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"srvResCode": 400, 
-			"error": "リクエストデータが無効です",
-			"srvResData": gin.H{},})
+			"srvResCode": 400,
+			"error":      "リクエストデータが無効です",
+			"srvResData": gin.H{}})
 		return
 	}
 	// 投げる
 	if err := magazineService.RegisterMagazines(magazines); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"srvResCode": 500, 
-			"error": "雑誌情報の登録に失敗しました"})
+			"srvResCode": 500,
+			"error":      "雑誌情報の登録に失敗しました"})
 		return
 	}
 	// 成功レスポンス
@@ -50,12 +49,12 @@ func DeleteMagazineHandler(c *gin.Context) {
 
 	// 雑誌コードから雑誌を削除
 	// 投げる
-	magazine ,err := magazineService.DeleteMagazine(magazineCode); 
-	
+	magazine, err := magazineService.DeleteMagazine(magazineCode)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"srvResCode": 500, 
-			"error": "雑誌情報の削除に失敗しました"})
+			"srvResCode": 500,
+			"error":      "雑誌情報の削除に失敗しました"})
 		return
 	}
 	// 成功レスポンス
@@ -85,7 +84,43 @@ func GetMagazinesHandler(c *gin.Context) {
 	})
 }
 
+// 雑誌コードで検索
+func GetMagazineByCodeHandler(c *gin.Context) {
+	// パラメータから雑誌コードを取得
+	magazineCode := c.Param("magazine_code")
+	// 投げる
+	magazine, err := magazineService.FindMagazineByCode(magazineCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResData": magazine,
+	})
+}
 
+// 雑誌名で検索
+func GetMagazineByNameHandler(c *gin.Context) {
+	// パラメータから雑誌名を取得
+	magazineName := c.Param("magazine_name")
+	// 投げる
+	magazine, err := magazineService.FindMagazineByName(magazineName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResData": magazine,
+	})
+}
 
 // csvからの登録
 func CsvMagazinesRegister(c *gin.Context) {
@@ -123,11 +158,10 @@ func CsvMagazinesRegister(c *gin.Context) {
 		return
 	}
 	// 雑誌情報を登録
-	if err := magazineService.RegisterMagazines(csvUtilMagazines); err != nil {	// なげる
+	if err := magazineService.RegisterMagazines(csvUtilMagazines); err != nil { // なげる
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"srvResCode": 500,
 			"error":      "雑誌情報の登録に失敗しました"})
 		return
 	}
 }
-

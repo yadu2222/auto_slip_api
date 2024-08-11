@@ -1,7 +1,7 @@
 package model
 
 type MethodType struct {
-	MethodId int `xorm:"'method_id' pk autoincr" json:"methodId"`
+	MethodId   int    `xorm:"'method_id' pk autoincr" json:"methodId"`
 	MethodType string `xorm:"'method_type' not null" json:"methodType"`
 }
 
@@ -10,7 +10,7 @@ func (MethodType) TableName() string {
 }
 
 // TODO: テストデータ作成
-func CreateMethodTypeTestData(){
+func CreateMethodTypeTestData() {
 	methodType1 := &MethodType{
 		MethodType: "配達",
 	}
@@ -29,10 +29,14 @@ func CreateMethodTypeTestData(){
 	methodType6 := &MethodType{
 		MethodType: "丸長",
 	}
+	methodType7 := &MethodType{
+		MethodType: "図書館スポンサー",
+	}
 	db.Insert(methodType1)
 	db.Insert(methodType2)
 	db.Insert(methodType3)
 	db.Insert(methodType4)
 	db.Insert(methodType5)
 	db.Insert(methodType6)
+	db.Insert(methodType7)
 }

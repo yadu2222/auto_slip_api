@@ -148,3 +148,14 @@ func FindRegularByCustomer(customerUuid string) ([]Regular, error) {
 	return regulars, nil
 }
 
+// 削除
+func DeleteRegular(regularUuid string) (*Regular, error) {
+	regular := new(Regular)
+	_, err := db.ID(regularUuid).Delete(regular)
+	if err != nil {
+		log.Println("定期情報の削除に失敗しました:", err)
+		return nil, err
+	}
+	return regular, nil
+}
+
