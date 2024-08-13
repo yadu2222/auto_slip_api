@@ -18,10 +18,10 @@ type Customer struct {
 	CustomerUuid string `xorm:"varchar(36) pk" json:"customerUUId"` // 一意の値
 	CustomerName string `json:"customerName"`                       // 雑誌コード
 	MethodType   int    `json:"methodType"`                         // 処理のタイプ
-	TellAddress  string `json:"tellAddress"`          //電話番号	// unique検討
+	TellAddress  string `json:"tellAddress"`                        //電話番号	// unique検討
 	TellType     int    `json:"tellType"`                           // 冊数
-	Note         string `json:"note"`                              // 冊数
-	CsvId		int    	`json:"csvId"`                             // csv形式のときに使用していたid　nullを許容
+	Note         string `json:"note"`                               // 冊数
+	CsvId        int    `json:"csvId"`                              // csv形式のときに使用していたid　nullを許容
 }
 
 func (Customer) TableName() string {
@@ -35,7 +35,7 @@ func InitCustomerFK() error {
 	if err != nil {
 		return err
 	}
-	
+
 	// // methodtype
 	_, err = db.Exec("ALTER TABLE customers ADD FOREIGN KEY (method_type) REFERENCES method_types(method_id) ON DELETE CASCADE ON UPDATE CASCADE")
 	if err != nil {
@@ -73,11 +73,21 @@ func GetCustomers() ([]Customer, error) {
 	return customers, nil
 }
 
+// 名前で検索して取得
+func FindCustomersByName(name string) ([]Customer, error) {
+	var customers []Customer
+	session := db.Table("customers")
+	err := session.Where("customer_name like ?", "%"+name+"%").Find(&customers)
+	if err != nil {
+		return customers, err
+	}
+	return customers, nil
+}
+
 // お客様を登録する関数
 func RegisterCustomer(customer Customer) error {
 	// // 電話番号の重複を確認
 	// exists, err := isCustomerExists(customer)
-
 
 	_, err := db.Insert(customer)
 	if err != nil {
@@ -90,7 +100,7 @@ func RegisterCustomer(customer Customer) error {
 func RegisterCustomers(customers []Customer) error {
 	for _, customer := range customers {
 
-		if(customer.TellAddress != ""){
+		if customer.TellAddress != "" {
 			exists, err := ExistsustomerByCsvID(customer.CsvId)
 			if err != nil {
 				// エラーが発生した場合、ログを出力して処理を継続
@@ -154,20 +164,20 @@ func FindCustomerByCsvID(csvid string) (Customer, error) {
 
 // 指定された顧客がすでに存在するかをチェックする関数
 func ExistsustomerByCsvID(csvid int) (bool, error) {
-    var customer Customer
-    session := db.Table("customers")
-    // データが存在するかどうかをチェック
-    exists, err := session.Where("csv_id = ?", csvid).Get(&customer)
-    if err != nil {
-        return false, err
-    }
-    if exists {
-        // 顧客が存在する場合
-        log.Println("顧客名:", customer.CustomerName)
-        return true, nil
-    }
-    // 顧客が存在しない場合
-    return false, nil
+	var customer Customer
+	session := db.Table("customers")
+	// データが存在するかどうかをチェック
+	exists, err := session.Where("csv_id = ?", csvid).Get(&customer)
+	if err != nil {
+		return false, err
+	}
+	if exists {
+		// 顧客が存在する場合
+		log.Println("顧客名:", customer.CustomerName)
+		return true, nil
+	}
+	// 顧客が存在しない場合
+	return false, nil
 }
 
 // お客様を削除する関数
@@ -182,5 +192,3 @@ func DeleteCustomer(customerUuid string) (*Customer, error) {
 	}
 	return &customer, nil
 }
-
-

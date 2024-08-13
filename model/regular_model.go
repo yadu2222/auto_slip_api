@@ -148,6 +148,26 @@ func FindRegularByCustomer(customerUuid string) ([]Regular, error) {
 	return regulars, nil
 }
 
+// 雑誌コードから部分一致で定期を取得
+func FindRegularByMagazineCode(code string) ([]Regular, error) {
+	var regulars []Regular
+	err := db.Where("magazine_code like ?", "%"+code+"%").Find(&regulars)
+	if err != nil {
+		return nil, err
+	}
+	return regulars, nil
+}
+
+// 顧客から定期を取得
+func FindRegularByCustomerAndMagazine(customerUuid string) ([]Regular, error) {
+	var regulars []Regular
+	err := db.Where("customer_uuid = (?)", customerUuid).Find(&regulars)
+	if err != nil {
+		return nil, err
+	}
+	return regulars, nil
+}
+
 // 削除
 func DeleteRegular(regularUuid string) (*Regular, error) {
 	regular := new(Regular)

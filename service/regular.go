@@ -10,8 +10,7 @@ import (
 type RegularService struct{}
 
 // 作成
-func(s *RegularService) RegisterRegular(regular model.Regular) error {
-
+func (s *RegularService) RegisterRegular(regular model.Regular) error {
 
 	// UUIDを生成して追加
 	uid, err := uuid.NewRandom()
@@ -28,7 +27,6 @@ func(s *RegularService) RegisterRegular(regular model.Regular) error {
 	}
 	return nil
 }
-
 
 // 定期の一括登録
 func (s *RegularService) RegisterRegulars(regulars []model.Regular) error {
@@ -82,38 +80,74 @@ func GetRegularByID(id int64) (*model.Magazine, error) {
 
 // 定期情報の構造体
 type RegularCustomerInfo struct {
-	RegularUuid string	`json:"regularUUID"`        // 定期情報ID
-	Quantity    int    	`json:"quantity"`        // 冊数
-	Customer    model.Customer `json:"customer"` // 顧客情報
+	RegularUuid string         `json:"regularUUID"` // 定期情報ID
+	Quantity    int            `json:"quantity"`    // 冊数
+	Customer    model.Customer `json:"customer"`    // 顧客情報
 }
 type RegularMagazineInfo struct {
-	RegularUuid string   `json:"regularUUID"`      // 定期情報ID
-	Quantity    int      `json:"quantity"`      // 冊数
-	Magaine     model.Magazine	`json:"magazine"` // 雑誌情報
+	RegularUuid string         `json:"regularUUID"` // 定期情報ID
+	Quantity    int            `json:"quantity"`    // 冊数
+	Magaine     model.Magazine `json:"magazine"`    // 雑誌情報
 }
 
 // viewみたいな構造体
 // 雑誌を主キーにした定期情報
 type FindMagazineRegular struct {
-	Magazine model.Magazine	`json:"magazine"` // 雑誌情報
-	Regulars []RegularCustomerInfo	`json:"regulars"` // 定期情報
+	Magazine model.Magazine        `json:"magazine"` // 雑誌情報
+	Regulars []RegularCustomerInfo `json:"regulars"` // 定期情報
 }
 
 // 顧客を主キーにした定期情報
 type FindCustomerRegular struct {
-	Customer model.Customer	`json:"customer"` // 顧客情報
-	Regulars []RegularMagazineInfo	`json:"regulars"` // 定期情報
+	Customer model.Customer        `json:"customer"` // 顧客情報
+	Regulars []RegularMagazineInfo `json:"regulars"` // 定期情報
 }
 
-// 雑誌を主キーに定期を一覧取得
-func (s *RegularService) FindMagazineRegulars() ([]FindMagazineRegular, error) {
-	var results []FindMagazineRegular
-	// 雑誌情報を一覧取得
-	magazines, err := model.GetMagazines()
+// 顧客名から定期情報を取得
+func (s *RegularService) FindRegularsByCustomer(customerName string) ([]FindCustomerRegular, error) {
+
+	// 名前から部分一致でcustomersを取得
+	customers, err := model.FindCustomersByName(customerName)
 	if err != nil {
 		log.Println("定期情報の取得に失敗しました:", err)
 		return nil, err
 	}
+
+	var regulars []FindCustomerRegular
+	for _, customer := range customers {
+		// 取得したIDから定期情報を取得
+		regularDara, err := model.FindRegularByCustomerAndMagazine(customer.CustomerUuid)
+		if err != nil {
+			log.Println("定期情報の取得に失敗しました:", err)
+			return nil, err
+		}
+		// 取得した定期情報から雑誌情報を取得
+		var magazineData []RegularMagazineInfo
+		for _, regularData := range regularDara {
+			magazine, err := model.FindMagazineByCode(regularData.MagazineCode)
+			if err != nil {
+				log.Println("雑誌情報の取得に失敗しました:", err)
+				return nil, err
+			}
+			magazineData = append(magazineData, RegularMagazineInfo{
+				RegularUuid: regularData.RegularUuid,
+				Quantity:    regularData.Quantity,
+				Magaine:     magazine,
+			})
+		}
+		regulars = append(regulars, FindCustomerRegular{
+			Customer: customer,
+			Regulars: magazineData,
+		})
+
+	}
+
+	return regulars, nil
+
+}
+
+func FindRegular(magazines []model.Magazine)([]FindMagazineRegular,error){
+	var results []FindMagazineRegular
 	// 雑誌情報に合わせて定期情報を取得
 	for _, magazine := range magazines {
 		// 定期情報を取得
@@ -147,6 +181,59 @@ func (s *RegularService) FindMagazineRegulars() ([]FindMagazineRegular, error) {
 
 	}
 	return results, nil
+
+}
+
+// 雑誌を主キーに定期を一覧取得
+// 検索なし
+func (s *RegularService) FindMagazineRegulars() ([]FindMagazineRegular, error) {
+	
+	// 雑誌情報を一覧取得
+	magazines, err := model.GetMagazines()
+	if err != nil {
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	results, err := FindRegular(magazines)
+	if(err != nil){
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	return results, err
+}
+
+// 雑誌を主キーに定期一覧取得
+// 雑誌コード検索
+func (s *RegularService) FindMagazineRegularsByCode(magazineCode string) ([]FindMagazineRegular, error) {
+	// 雑誌情報を取得
+	magazine, err := model.FindMagazineCode(magazineCode)
+	if err != nil {
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	results, err := FindRegular(magazine)
+	if(err != nil){
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	return results, err
+}
+
+// 雑誌を主キーに定期一覧取得
+// 雑誌名検索
+func (s *RegularService) FindMagazineRegularsByName(magazineName string) ([]FindMagazineRegular, error) {
+	// 雑誌情報を取得
+	magazine, err := model.FindMagazineName(magazineName)
+	if err != nil {
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	results, err := FindRegular(magazine)
+	if(err != nil){
+		log.Println("定期情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	return results, err
 }
 
 // 顧客を主キーに定期を一覧取得
@@ -179,7 +266,7 @@ func (s *RegularService) FindCustomerRegulars() ([]FindCustomerRegular, error) {
 			regularInfos = append(regularInfos, RegularMagazineInfo{
 				RegularUuid: regular.RegularUuid,
 				Quantity:    regular.Quantity,
-				Magaine:	magazine[0],
+				Magaine:     magazine[0],
 			})
 
 		}
@@ -194,7 +281,7 @@ func (s *RegularService) FindCustomerRegulars() ([]FindCustomerRegular, error) {
 }
 
 // 削除
-func(s *RegularService) DeleteRegular(regularUuid string) (*model.Regular, error) {
+func (s *RegularService) DeleteRegular(regularUuid string) (*model.Regular, error) {
 	regular, err := model.DeleteRegular(regularUuid)
 	if err != nil {
 		log.Println("定期情報の削除に失敗しました:", err)

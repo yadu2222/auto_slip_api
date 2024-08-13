@@ -81,6 +81,68 @@ func GetCustomerRegularsHandler(c *gin.Context) {
 	})
 }
 
+// 顧客名から検索して定期情報一覧取得
+func GetRegularsByCustomerNameHandler(c *gin.Context) {
+	// パラメータから顧客名を取得
+	customerName := c.Param("customer_name")
+	// 投げる
+	regulars, err := regularService.FindRegularsByCustomer(customerName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "定期情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "定期情報の取得に成功しました",
+		"srvResData": regulars,
+	})
+}
+
+// 雑誌名から検索して定期情報一覧取得
+func GetRegularsByMagazineNameHandler(c *gin.Context) {
+	// パラメータから雑誌名を取得
+	magazineName := c.Param("magazine_name")
+	// 投げる
+	regulars, err := regularService.FindMagazineRegularsByName(magazineName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "定期情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "定期情報の取得に成功しました",
+		"srvResData": regulars,
+	})
+}
+
+// 雑誌コードから検索して定期情報一覧取得
+func GetRegularsByMagazineCodeHandler(c *gin.Context) {
+	// パラメータから雑誌コードを取得
+	magazineCode := c.Param("magazine_code")
+	// 投げる
+	regulars, err := regularService.FindMagazineRegularsByCode(magazineCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "定期情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "定期情報の取得に成功しました",
+		"srvResData": regulars,
+	})
+}
+
+
+
 // csvからの登録
 func CsvRegularRegister(c *gin.Context) {
 	// ファイルを受け取る

@@ -1,15 +1,16 @@
 package service
 
 import (
-	"log"
-	"github.com/google/uuid"
 	"auto_slip_api/model"
+	"log"
+
+	"github.com/google/uuid"
 )
 
 type CustomerService struct{}
 
 // 新しいお客様の登録
-func(s *CustomerService) RegisterCustomer(customer model.Customer) error {
+func (s *CustomerService) RegisterCustomer(customer model.Customer) error {
 	// UUIDを生成して追加
 	uid, err := uuid.NewRandom()
 	if err != nil {
@@ -26,7 +27,7 @@ func(s *CustomerService) RegisterCustomer(customer model.Customer) error {
 }
 
 // お客様の一括登録
-func(s *CustomerService) RegisterCustomers(customers []model.Customer) error {
+func (s *CustomerService) RegisterCustomers(customers []model.Customer) error {
 	// for i := 0; i < len(customers); i++{
 	// // // UUIDを生成して追加
 	// // 	uid, err := uuid.NewRandom()
@@ -69,7 +70,7 @@ func UpdateCustomer(magazine *model.Magazine) error {
 }
 
 // 顧客一覧を取得
-func(s *CustomerService) GetCustomers() ([]model.Customer, error) {
+func (s *CustomerService) GetCustomers() ([]model.Customer, error) {
 
 	var customers []model.Customer
 
@@ -81,8 +82,18 @@ func(s *CustomerService) GetCustomers() ([]model.Customer, error) {
 	return customers, nil
 }
 
+// 名前で検索して顧客を取得
+func (s *CustomerService) FindCustomerByName(customerName string) ([]model.Customer, error) {
+	customers, err := model.FindCustomersByName(customerName)
+	if err != nil {
+		log.Println("お客様情報の取得に失敗しました:", err)
+		return nil, err
+	}
+	return customers, nil
+}
+
 // 顧客を削除
-func(s *CustomerService) DeleteCustomer(customerUuid string) (*model.Customer, error) {
+func (s *CustomerService) DeleteCustomer(customerUuid string) (*model.Customer, error) {
 	customer, err := model.DeleteCustomer(customerUuid)
 	if err != nil {
 		log.Println("お客様情報の削除に失敗しました:", err)

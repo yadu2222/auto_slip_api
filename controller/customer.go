@@ -82,6 +82,26 @@ func GetCustomersHandler(c *gin.Context) {
 	})
 }
 
+// 顧客情報を名前で検索して取得
+func GetCustomerByNameHandler(c *gin.Context) {
+	// パラメータからお客様名を取得
+	customerName := c.Param("customer_name")
+	// 投げる
+	customer, err := customerService.FindCustomerByName(customerName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "顧客情報の取得に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "顧客情報の取得に成功しました",
+		"srvResData": customer,
+	})
+}
+
 // csvからの登録
 func CsvCustomersRegister(c *gin.Context) {
 	// ファイルを受け取る

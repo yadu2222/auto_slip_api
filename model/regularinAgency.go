@@ -27,8 +27,8 @@ type RegularAgency struct {
 // 		return nil, err
 // 	}
 
-// 	return regularAgencys, nil
-// }
+//		return regularAgencys, nil
+//	}
 func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 	var regularAgencys []RegularAgency
 
@@ -54,4 +54,3 @@ func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 
 	return regularAgencys, nil
 }
-

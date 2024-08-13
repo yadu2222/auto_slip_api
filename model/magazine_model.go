@@ -94,6 +94,20 @@ func isMagazineExists(magazine Magazine) (bool, error) {
 	return count > 0, nil
 }
 
+// 雑誌コードから雑誌を取得
+func FindMagazineByCode(magazineCode string) (Magazine, error) {
+    var magazine Magazine
+    has, err := db.Where("magazine_code = ?", magazineCode).Get(&magazine)
+    if err != nil {
+        return magazine, err
+    }
+    if !has {
+        return magazine, err
+    }
+    return magazine, nil
+}
+
+
 // 雑誌コードから雑誌雑誌を取得
 func FindMagazineCode(code string) ([]Magazine, error) {
 	var magazine []Magazine
