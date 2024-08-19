@@ -29,6 +29,8 @@ type RegularAgency struct {
 
 //		return regularAgencys, nil
 //	}
+
+// 数取り
 func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 	var regularAgencys []RegularAgency
 

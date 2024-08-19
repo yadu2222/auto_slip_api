@@ -21,8 +21,8 @@ func GetRouter() (*gin.Engine, error) {
 			magazine.GET("/magazines", controller.GetMagazinesHandler)    // 雑誌取得
 			magazine.GET("/magazines/:magazine_name", controller.GetMagazineByNameHandler) // 雑誌名で検索
 			magazine.GET("/magazine/:magazine_code", controller.GetMagazineByCodeHandler) // 雑誌コードで検索
-			magazine.POST("/register", controller.CreateMagazinesHandler) // 雑誌登録
-			magazine.PUT("/", controller.CreateMagazinesHandler)          // 雑誌更新
+			magazine.POST("/register", controller.CreateMagazineHandler) // 雑誌登録
+			magazine.PUT("/update/:old_magazine_code", controller.UpdateMagazineHandler)          // 雑誌更新
 			magazine.DELETE("/delete/:magazine_code", controller.DeleteMagazineHandler)       // 雑誌削除
 		}
 
@@ -32,7 +32,7 @@ func GetRouter() (*gin.Engine, error) {
 			customer.GET("/customers", controller.GetCustomersHandler)
 			customer.GET("/customers/:customer_name", controller.GetCustomerByNameHandler)
 			customer.POST("/register", controller.RegisterCustomerHandler)
-			customer.PUT("/update", controller.CreateMagazinesHandler)
+			customer.PUT("/update", controller.UpdateCustomerHandler)
 			customer.DELETE("/delete/:customer_uuid", controller.DeleteCustomerHandler)
 		}
 
@@ -45,7 +45,6 @@ func GetRouter() (*gin.Engine, error) {
 			regular.GET("regulars/magazine/code/:magazine_code",controller.GetRegularsByMagazineCodeHandler)	// 雑誌コードで検索
 			regular.GET("/", controller.CreateMagazinesHandler)
 			regular.POST("/register", controller.CreateRegularHandler)
-			regular.PUT("/", controller.CreateMagazinesHandler)
 			regular.DELETE("/delete/:regular_uuid", controller.DeleteRegularHandler)	// 定期削除
 		}
 

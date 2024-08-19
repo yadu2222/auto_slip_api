@@ -56,6 +56,33 @@ func CreateMagazineTestData() {
 }
 
 // 重複チェックを行い、雑誌を登録する関数
+func RegisterMagazine(magazine Magazine) error {
+
+	exists, err := isMagazineExists(magazine)
+	if err != nil {
+		// エラーが発生した場合、ログを出力して処理を継続
+		log.Printf("雑誌 %s の重複チェック中にエラーが発生しました: %v", magazine.MagazineName, err)
+		return err
+	}
+	if exists {
+		// 重複がある場合はログを出力して処理を継続
+		log.Printf("雑誌 %s はすでに存在します", magazine.MagazineName)
+		return err
+	}
+
+	// 雑誌を登録
+	_, err = db.Insert(&magazine)
+	if err != nil {
+		// エラーが発生した場合、ログを出力して処理を継続します
+		log.Printf("雑誌 %s の登録中にエラーが発生しました: %v", magazine.MagazineName, err)
+		return err
+	}
+	log.Printf("雑誌 %s を登録しました", magazine.MagazineName)
+
+	return nil
+}
+
+// 重複チェックを行い、雑誌を登録する関数
 func RegisterMagazines(magazines []Magazine) error {
 	for _, magazine := range magazines {
 		exists, err := isMagazineExists(magazine)
@@ -96,17 +123,16 @@ func isMagazineExists(magazine Magazine) (bool, error) {
 
 // 雑誌コードから雑誌を取得
 func FindMagazineByCode(magazineCode string) (Magazine, error) {
-    var magazine Magazine
-    has, err := db.Where("magazine_code = ?", magazineCode).Get(&magazine)
-    if err != nil {
-        return magazine, err
-    }
-    if !has {
-        return magazine, err
-    }
-    return magazine, nil
+	var magazine Magazine
+	has, err := db.Where("magazine_code = ?", magazineCode).Get(&magazine)
+	if err != nil {
+		return magazine, err
+	}
+	if !has {
+		return magazine, err
+	}
+	return magazine, nil
 }
-
 
 // 雑誌コードから雑誌雑誌を取得
 func FindMagazineCode(code string) ([]Magazine, error) {
@@ -192,4 +218,14 @@ func DeleteMagazine(magazineCode string) (*Magazine, error) {
 
 	// 削除した雑誌の情報を返す
 	return &magazine, nil
+}
+
+// 雑誌情報を更新
+func UpdateMagazine(magazine Magazine,oldMagazineCode string) error {
+	_, err := db.Where("magazine_code = ?", oldMagazineCode).Update(&magazine)
+	if err != nil {
+		log.Println("雑誌情報の更新に失敗しました:", err)
+		return err
+	}
+	return nil
 }

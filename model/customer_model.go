@@ -192,3 +192,12 @@ func DeleteCustomer(customerUuid string) (*Customer, error) {
 	}
 	return &customer, nil
 }
+
+// 顧客情報を更新
+func UpdateCustomer(customer Customer) error {
+	_, err := db.Where("customer_uuid = ?", customer.CustomerUuid).Update(&customer)
+	if err != nil {
+		return err
+	}
+	return nil
+}

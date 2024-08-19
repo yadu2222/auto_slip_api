@@ -133,12 +133,12 @@ func RegisterSample() {
 
 	// テストデータ
 	CreateEmployeeTestData()        // 従業員
-	CreateMagazineTestData()        // 雑誌
-	CreateCustomerTestData()        // 顧客
-	CreateRegularTestData()         // 定期購読
-	CreateCountingRegularTestData() // 集計定期購読
-	CreateDeliveryLogTestData()     // 納品履歴
-	CreateInvoiceLogTestData()      // 請求履歴
-	CreateOparateLogTestData()      // 操作履歴
+	// CreateMagazineTestData()        // 雑誌
+	// CreateCustomerTestData()        // 顧客
+	// CreateRegularTestData()         // 定期購読
+	// CreateCountingRegularTestData() // 集計定期購読
+	// CreateDeliveryLogTestData()     // 納品履歴
+	// CreateInvoiceLogTestData()      // 請求履歴
+	// CreateOparateLogTestData()      // 操作履歴
 
 }

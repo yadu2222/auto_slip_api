@@ -16,6 +16,33 @@ import (
 var magazineService = service.MagazineService{} // サービスの実体を作る。
 
 // 雑誌登録
+func CreateMagazineHandler(c *gin.Context) {
+	// マッピング
+	var magazine model.Magazine
+	if err := c.ShouldBindBodyWith(&magazine, binding.JSON); err != nil {
+		print(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"srvResCode": 400,
+			"error":      "リクエストデータが無効です",
+			"srvResData": gin.H{}})
+		return
+	}
+	// 投げる
+	if err := magazineService.RegisterMagazine(magazine); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の登録に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusCreated, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "お客様情報の登録に成功しました",
+		"srvResData": gin.H{},
+	})
+}
+
+// 雑誌登録
 func CreateMagazinesHandler(c *gin.Context) {
 	// マッピング
 	var magazines []model.Magazine
@@ -164,4 +191,36 @@ func CsvMagazinesRegister(c *gin.Context) {
 			"error":      "雑誌情報の登録に失敗しました"})
 		return
 	}
+}
+
+// 雑誌情報を更新
+func UpdateMagazineHandler(c *gin.Context) {
+	// マッピング
+	var magazine model.Magazine
+	if err := c.ShouldBindBodyWith(&magazine, binding.JSON); err != nil {
+		print(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"srvResCode": 400,
+			"error":      "リクエストデータが無効です",
+			"srvResData": gin.H{}})
+		return
+	}
+
+	// パラメータから雑誌コードを取得
+	oldMagazineCode := c.Param("old_magazine_code")
+
+
+	// 投げる
+	if err := magazineService.UpdateMagazine(magazine,oldMagazineCode); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "雑誌情報の更新に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "雑誌情報の更新に成功しました",
+		"srvResData": gin.H{},
+	})
 }

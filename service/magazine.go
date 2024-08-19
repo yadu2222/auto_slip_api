@@ -9,6 +9,18 @@ import (
 type MagazineService struct{}
 
 // 雑誌登録
+func(s *MagazineService) RegisterMagazine(magazine model.Magazine) error {
+	magazine.TakerUuid = "c99cb6c4-42b9-4d6b-9884-ae6664f9df00"
+	
+	err := model.RegisterMagazine(magazine)
+	if err != nil {
+		log.Println("雑誌の登録に失敗しました:", err)
+		return err
+	}
+	return nil
+}
+
+// 雑誌登録
 func(s *MagazineService) RegisterMagazines(magazines []model.Magazine) error {
 	// 雑誌の数だけループ
 	// UUIDを生成して追加
@@ -67,4 +79,18 @@ func(s *MagazineService) FindMagazineByName(magazineName string) ([]model.Magazi
 		return nil, err
 	}
 	return magazine, nil
+}
+
+// 雑誌を更新
+func(s *MagazineService) UpdateMagazine(magazine model.Magazine,oldMagazineCode string) error {
+
+	// TODO: 作業者のUUID
+	magazine.TakerUuid = "c99cb6c4-42b9-4d6b-9884-ae6664f9df00"
+	
+	err := model.UpdateMagazine(magazine,oldMagazineCode)
+	if err != nil {
+		log.Println("雑誌情報の更新に失敗しました:", err)
+		return err
+	}
+	return nil
 }

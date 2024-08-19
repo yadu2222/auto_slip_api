@@ -146,3 +146,29 @@ func CsvCustomersRegister(c *gin.Context) {
 		return
 	}
 }
+
+// お客様情報を更新
+func UpdateCustomerHandler(c *gin.Context) {
+	// マッピング
+	var customer model.Customer
+	if err := c.ShouldBindBodyWith(&customer,binding.JSON); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"srvResCode": 400, 
+			"error": "リクエストデータが無効です",
+			"srvResData": gin.H{},})
+		return
+	}
+	// 投げる
+	if err := customerService.UpdateCustomer(customer); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500, 
+			"error": "お客様情報の更新に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusOK, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "お客様情報の更新に成功しました",
+		"srvResData": gin.H{},
+	})
+}

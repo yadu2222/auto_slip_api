@@ -101,3 +101,13 @@ func (s *CustomerService) DeleteCustomer(customerUuid string) (*model.Customer, 
 	}
 	return customer, nil
 }
+
+// 顧客情報を更新
+func (s *CustomerService) UpdateCustomer(customer model.Customer) error {
+	err := model.UpdateCustomer(customer)
+	if err != nil {
+		log.Println("お客様情報の更新に失敗しました:", err)
+		return err
+	}
+	return nil
+}
