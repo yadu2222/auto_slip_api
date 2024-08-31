@@ -16,8 +16,8 @@ type Regular struct {
 	// json json化する際のキー名
 	RegularUuid  string `xorm:"varchar(36) pk" json:"regularUUID"` // 一意の値
 	MagazineCode string `xorm:"varchar(36)" json:"magazineCode"`   // 雑誌ID
-	CustomerUuid string `xorm:"varchar(36)" json:"customerUUID"`                      // 顧客コード
-	Quantity     int    `json:"quantity"`                     // 冊数
+	CustomerUuid string `xorm:"varchar(36)" json:"customerUUID"`   // 顧客コード
+	Quantity     int    `json:"quantity"`                          // 冊数
 }
 
 func (Regular) TableName() string {
@@ -50,14 +50,12 @@ func CreateRegularTestData() {
 	db.Insert(regular1)
 }
 
-
-
 // 定期情報の登録
 func RegisterRegular(regular Regular) error {
 	exists, err := isRegularExists(regular)
 	if err != nil {
 		// エラーが発生した場合、ログを出力して処理を継続
-		log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid,err)
+		log.Printf("%sの重複チェック中にエラーが発生しました: %v", regular.CustomerUuid, err)
 		return err
 	}
 	if exists {
@@ -98,7 +96,7 @@ func RegisterRegulars(regulars []Regular) error {
 			// エラーが発生した場合、ログを出力して処理を継続します
 			log.Printf("%sの登録中にエラーが発生しました: %v", regular.CustomerUuid, err)
 			// return err
-		}else{
+		} else {
 			log.Printf("%sを登録しました", regular.CustomerUuid)
 		}
 	}
@@ -139,7 +137,7 @@ func FindRegularByMagazine(magazineUuid string) ([]Regular, error) {
 }
 
 // 顧客を主キーに定期を一覧取得
-func FindRegularByCustomer(customerUuid string) ([]Regular, error) {
+func FindRegularsByCustomer(customerUuid string) ([]Regular, error) {
 	var regulars []Regular
 	err := db.Where("customer_uuid = (?)", customerUuid).Find(&regulars)
 	if err != nil {
@@ -159,7 +157,7 @@ func FindRegularByMagazineCode(code string) ([]Regular, error) {
 }
 
 // 顧客から定期を取得
-func FindRegularByCustomerAndMagazine(customerUuid string) ([]Regular, error) {
+func FindRegularByCustomer(customerUuid string) ([]Regular, error) {
 	var regulars []Regular
 	err := db.Where("customer_uuid = (?)", customerUuid).Find(&regulars)
 	if err != nil {
@@ -179,3 +177,30 @@ func DeleteRegular(regularUuid string) (*Regular, error) {
 	return regular, nil
 }
 
+// 顧客IDと雑誌IDから定期情報が存在するかをチェックし、冊数を返す
+func FindRegularByCustomerAndMagazine(customerUuid string, magazineCode string) (int, error) {
+	var regular Regular
+	// session := db.Where("customer_uuid = ?", customerUuid).And("magazine_code = ?", magazineCode)
+
+	session := db.Table("regulars")
+		// magazine_codeが20000以上の場合、上4桁で検索
+	if len(magazineCode) >= 5 && magazineCode >= "20000" {
+		likePattern := magazineCode[:4] + "%"
+		session = session.Where("substring(regulars.magazine_code,1,4) LIKE ?", likePattern)
+	} else {
+		// それ以外の場合は完全一致で検索
+		session = session.Where("regulars.magazine_code = ?", magazineCode)
+	}
+
+	session = session.Where("regulars.customer_uuid = ?", customerUuid)
+
+	has,err := session.Get(&regular)
+	if err != nil {
+		return 0, err
+	}
+	if !has {
+		return 0, nil
+	}
+
+	return regular.Quantity, nil
+}

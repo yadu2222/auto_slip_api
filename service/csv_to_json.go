@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/google/uuid"
 	"strconv"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 // csvデータをマップ>>JSONに変換する
@@ -15,23 +16,37 @@ func CsvToAgencyJson(records [][]string) ([]byte, error) {
 	// some code
 	// データの変換と格納
 	var convertedList []map[string]interface{} // 変換後のリストを格納するスライス
-	
-	
+
 	for _, record := range records {
 		// UUIDを生成して追加
 		uid, _ := uuid.NewRandom()
-		quantity,err := strconv.Atoi(record[11])
+		quantity, err := strconv.Atoi(record[11])
 		if err != nil {
 			fmt.Println(err)
 			quantity = 0
 		}
+
+		number := strings.TrimSpace(record[6])
+		if record[7] != "00" {
+			number += "/" + record[7]
+
+		}
+
+		// priceを整数に変換
+		price, err := strconv.Atoi(strings.TrimSpace(record[12]))
+		if err != nil {
+			price = 0 // デフォルト値を使用
+			fmt.Printf("price の変換に失敗しました: %v\n", record[12])
+		}
+
 		// マップを作成してリストに追加
 		magazineMap := map[string]interface{}{
 			"countingUUID": uid.String(),
 			"magazineCode": record[5],
 			"magazineName": record[10],
-			"number":record[6],
-			"quantity":  quantity,
+			"number":       number,
+			"quantity":     quantity,
+			"price":        price / 10 * 11,
 		}
 		convertedList = append(convertedList, magazineMap)
 	}
@@ -45,7 +60,6 @@ func CsvToAgencyJson(records [][]string) ([]byte, error) {
 	return byte, nil
 
 }
-
 
 // csvデータをマップ>>JSONに変換する
 // 雑誌データ
@@ -103,7 +117,6 @@ func CsvToCustomerJSON(records [][]string) ([]byte, error) {
 			csvId = 0 // デフォルト値を使用
 			fmt.Printf("csvId の変換に失敗しました: %v\n", record[0])
 		}
-		
 
 		// customerUUIDを生成
 		uid, _ := uuid.NewRandom()
@@ -124,13 +137,12 @@ func CsvToCustomerJSON(records [][]string) ([]byte, error) {
 	byte, err := json.Marshal(convertedList)
 	if err != nil {
 		fmt.Println(err)
-		
+
 	}
 	fmt.Println(string(byte))
 	return byte, nil
 
 }
-
 
 // csvデータをマップ>>JSONに変換する
 // 定期データ
@@ -151,7 +163,7 @@ func CsvToRegularJSON(records [][]string) ([]byte, error) {
 		customerMap := map[string]interface{}{
 			"customerUUID": record[0],
 			"magazineCode": record[1],
-			"quantity": quantity,
+			"quantity":     quantity,
 		}
 		convertedList = append(convertedList, customerMap)
 	}
@@ -159,7 +171,7 @@ func CsvToRegularJSON(records [][]string) ([]byte, error) {
 	byte, err := json.Marshal(convertedList)
 	if err != nil {
 		fmt.Println(err)
-		
+
 	}
 	fmt.Println(string(byte))
 	return byte, nil

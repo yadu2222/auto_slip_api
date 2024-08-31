@@ -31,7 +31,6 @@ func CreateDeliveryLogTestData() {
 		Price:        1000,
 		DeliveryDate: time.Now(),
 		TakerUuid:    "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d30",
-
 	}
 	db.Insert(deliveryLog1)
 }

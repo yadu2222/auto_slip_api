@@ -11,4 +11,5 @@ type Agency struct {
 	MagazineCode string `xorm:"varchar(36) not null" json:"magazineCode"`	// 雑誌コード
 	Number string `json:"number"`	// 号数
 	Quenity int `json:"quantity"`	// 冊数
+	Price int `json:"price"`	// 価格
 }

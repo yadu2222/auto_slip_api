@@ -127,9 +127,7 @@ func RegisterCustomers(customers []Customer) error {
 }
 
 // 指定された顧客がすでに存在するかを電話番号でチェックする関数
-func isCustomerExists(customer Customer) (bool, error) {
-	// ここで具体的に雑誌の重複チェックを実装します
-	var count int64
+func IsCustomerExists(customer Customer) (bool, error) {
 	session := db.Where("tell_address = ?", customer.TellAddress)
 	count, err := session.Count(&Customer{})
 	if err != nil {
@@ -200,4 +198,15 @@ func UpdateCustomer(customer Customer) error {
 		return err
 	}
 	return nil
+}
+
+// 配達が必要な顧客を取得
+func FindCustomersNeedDelivery() ([]Customer, error) {
+	var customers []Customer
+	session := db.Table("customers")
+	err := session.Where("method_type = 1").Find(&customers)
+	if err != nil {
+		return nil, err
+	}
+	return customers, nil
 }

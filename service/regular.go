@@ -116,7 +116,7 @@ func (s *RegularService) FindRegularsByCustomer(customerName string) ([]FindCust
 	var regulars []FindCustomerRegular
 	for _, customer := range customers {
 		// 取得したIDから定期情報を取得
-		regularDara, err := model.FindRegularByCustomerAndMagazine(customer.CustomerUuid)
+		regularDara, err := model.FindRegularByCustomer(customer.CustomerUuid)
 		if err != nil {
 			log.Println("定期情報の取得に失敗しました:", err)
 			return nil, err
@@ -146,7 +146,7 @@ func (s *RegularService) FindRegularsByCustomer(customerName string) ([]FindCust
 
 }
 
-func FindRegular(magazines []model.Magazine)([]FindMagazineRegular,error){
+func FindRegular(magazines []model.Magazine) ([]FindMagazineRegular, error) {
 	var results []FindMagazineRegular
 	// 雑誌情報に合わせて定期情報を取得
 	for _, magazine := range magazines {
@@ -187,7 +187,7 @@ func FindRegular(magazines []model.Magazine)([]FindMagazineRegular,error){
 // 雑誌を主キーに定期を一覧取得
 // 検索なし
 func (s *RegularService) FindMagazineRegulars() ([]FindMagazineRegular, error) {
-	
+
 	// 雑誌情報を一覧取得
 	magazines, err := model.GetMagazines()
 	if err != nil {
@@ -195,7 +195,7 @@ func (s *RegularService) FindMagazineRegulars() ([]FindMagazineRegular, error) {
 		return nil, err
 	}
 	results, err := FindRegular(magazines)
-	if(err != nil){
+	if err != nil {
 		log.Println("定期情報の取得に失敗しました:", err)
 		return nil, err
 	}
@@ -212,7 +212,7 @@ func (s *RegularService) FindMagazineRegularsByCode(magazineCode string) ([]Find
 		return nil, err
 	}
 	results, err := FindRegular(magazine)
-	if(err != nil){
+	if err != nil {
 		log.Println("定期情報の取得に失敗しました:", err)
 		return nil, err
 	}
@@ -229,7 +229,7 @@ func (s *RegularService) FindMagazineRegularsByName(magazineName string) ([]Find
 		return nil, err
 	}
 	results, err := FindRegular(magazine)
-	if(err != nil){
+	if err != nil {
 		log.Println("定期情報の取得に失敗しました:", err)
 		return nil, err
 	}
@@ -248,7 +248,7 @@ func (s *RegularService) FindCustomerRegulars() ([]FindCustomerRegular, error) {
 	// 顧客情報に合わせて定期情報を取得
 	for _, customer := range customers {
 		// 定期情報を取得
-		regulars, err := model.FindRegularByCustomer(customer.CustomerUuid)
+		regulars, err := model.FindRegularsByCustomer(customer.CustomerUuid)
 		if err != nil {
 			log.Println("定期情報の取得に失敗しました:", err)
 			return nil, err
