@@ -7,9 +7,12 @@ import (
 // 納品情報の保存
 type DeliveryLog struct {
 	DeliveryUuid string    `xorm:"varchar(36) pk" json:"deliveryUUID"`
-	RegularUuid  string    `xorm:"varchar(36)" json:"regularUUID"`
+	CustomerUuid string    `xorm:"varchar(36) not null" json:"customerUUID"`
+	MagazineName string    `xorm:"varchar(36) not null" json:"magazineName"`
+	Quantity	 int       `json:"quantity"`
+	Number       string    `json:"number"` // 号数
 	Price        int       `json:"price"`
-	DeliveryDate time.Time `xorm:"DATETIME" json:"deliveryDate"`
+	DeliveryDate time.Time `xorm:"DATETIME" json:"deliveryDate"` // 納品日
 	TakerUuid    string    `xorm:"varchar(36)" json:"takerUUID"`
 }
 
@@ -20,11 +23,15 @@ func (DeliveryLog) TableName() string {
 // テストデータ
 func CreateDeliveryLogTestData() {
 	deliveryLog1 := &DeliveryLog{
-		DeliveryUuid: "ac62957c-f86d-4814-95e0-ae8f86a126cd",
-		RegularUuid:  "903e3147-1b8c-4e26-a5ee-f525a246e2df",
+		DeliveryUuid: "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d28",
+		CustomerUuid: "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d29",
+		MagazineName: "週刊少年ジャンプ",
+		Quantity:     100,
+		Number:       "2/15",
 		Price:        1000,
 		DeliveryDate: time.Now(),
-		TakerUuid:    "c99cb6c4-42b9-4d6b-9884-ae6664f9df00",
+		TakerUuid:    "ff934ac7-ab6c-4dc9-8449-e2bcb4b69d30",
+
 	}
 	db.Insert(deliveryLog1)
 }
@@ -32,11 +39,11 @@ func CreateDeliveryLogTestData() {
 // FK制約の追加
 func InitDeliveryLogFK() error {
 	// regularid
-	_, err := db.Exec("ALTER TABLE delivery_logs ADD FOREIGN KEY (regular_uuid) REFERENCES regulars(regular_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
+	_, err := db.Exec("ALTER TABLE delivery_logs ADD FOREIGN KEY (customer_uuid) REFERENCES customers(customer_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
 	if err != nil {
 		return err
 	}
-	// OuchiUuid
+	// takeruuid
 	_, err = db.Exec("ALTER TABLE delivery_logs ADD FOREIGN KEY (taker_uuid) REFERENCES employees(employee_uuid) ON DELETE CASCADE ON UPDATE CASCADE")
 	if err != nil {
 		return err
