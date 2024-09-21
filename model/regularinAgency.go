@@ -37,6 +37,7 @@ func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 	query := db.Table("regulars").
 		Join("LEFT", "magazines", "magazines.magazine_code = regulars.magazine_code").
 		Join("LEFT", "customers", "customers.customer_uuid = regulars.customer_uuid").
+		OrderBy("customers.customer_name").
 		Select("regulars.regular_uuid, customers.customer_uuid, customers.customer_name, regulars.quantity, customers.method_type")
 
 	// magazine_codeが60000以上の場合、上4桁で検索
