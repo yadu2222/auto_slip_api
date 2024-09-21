@@ -67,9 +67,9 @@ func GetRouter() (*gin.Engine, error) {
 		}
 
 		// 納品
-		delivery := v1.Group("/deliverys")
+		delivery := v1.Group("/deliveries")
 		{
-			delivery.GET("/deliverys", controller.CSVDeliveryHandler)
+			delivery.POST("/deliveries", controller.CSVDeliveryHandler)
 			delivery.POST("/", controller.CreateMagazinesHandler)
 			delivery.PUT("/", controller.CreateMagazinesHandler)
 			delivery.DELETE("/", controller.CreateMagazinesHandler)
