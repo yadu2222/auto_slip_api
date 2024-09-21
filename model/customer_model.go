@@ -204,7 +204,7 @@ func UpdateCustomer(customer Customer) error {
 func FindCustomersNeedDelivery() ([]Customer, error) {
 	var customers []Customer
 	session := db.Table("customers")
-	err := session.Where("method_type = 1").Find(&customers)
+	err := session.Where("method_type = 1").Or("method_type = 3").Find(&customers)
 	if err != nil {
 		return nil, err
 	}
