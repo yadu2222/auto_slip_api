@@ -6,7 +6,7 @@ import (
 
 	"strconv"
 	"strings"
-
+	"math"
 	"github.com/google/uuid"
 )
 
@@ -29,7 +29,6 @@ func CsvToAgencyJson(records [][]string) ([]byte, error) {
 		number := strings.TrimSpace(record[6])
 		if record[7] != "00" {
 			number += "/" + record[7]
-
 		}
 
 		// priceを整数に変換
@@ -38,6 +37,10 @@ func CsvToAgencyJson(records [][]string) ([]byte, error) {
 			price = 0 // デフォルト値を使用
 			fmt.Printf("price の変換に失敗しました: %v\n", record[12])
 		}
+		
+		// priceに1.1を掛けてから四捨五入
+		priceFloat := float64(price) * 1.1
+		price = int(math.Round(priceFloat))
 
 		// マップを作成してリストに追加
 		magazineMap := map[string]interface{}{
@@ -46,7 +49,7 @@ func CsvToAgencyJson(records [][]string) ([]byte, error) {
 			"magazineName": record[10],
 			"number":       number,
 			"quantity":     quantity,
-			"price":        price / 10 * 11,
+			"price":        price,
 		}
 		convertedList = append(convertedList, magazineMap)
 	}
