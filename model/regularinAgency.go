@@ -8,6 +8,7 @@ type RegularAgency struct {
 	RegularUuid  string `xorm:"varchar(36) not null" json:"regularUUID"`
 	CustomerUuid string `xorm:"varchar(36) not null" json:"customerUUID"`
 	CustomerName string `json:"customerName"`
+	Ruby 	   	 string `json:"ruby"`
 	Quantity     int    `json:"quantity"`
 	MethodType   int    `json:"methodType"`
 }
@@ -38,7 +39,7 @@ func FindCountingMagazine(magazineCode string) ([]RegularAgency, error) {
 		Join("LEFT", "magazines", "magazines.magazine_code = regulars.magazine_code").
 		Join("LEFT", "customers", "customers.customer_uuid = regulars.customer_uuid").
 		OrderBy("customers.customer_name").
-		Select("regulars.regular_uuid, customers.customer_uuid, customers.customer_name, regulars.quantity, customers.method_type")
+		Select("regulars.regular_uuid, customers.customer_uuid,customers.ruby, customers.customer_name, regulars.quantity, customers.method_type")
 
 	// magazine_codeが60000以上の場合、上4桁で検索
 	if len(magazineCode) >= 5 && magazineCode >= "20000" {
