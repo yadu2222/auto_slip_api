@@ -16,7 +16,8 @@ type Customer struct {
 	// autoincr 自動インクリメント
 	// json json化する際のキー名
 	CustomerUuid string `xorm:"varchar(36) pk" json:"customerUUId"` // 一意の値
-	CustomerName string `json:"customerName"`                       // 雑誌コード
+	CustomerName string `json:"customerName"`                       // 顧客名
+	Ruby 		 string `json:"ruby"`                       // 顧客名のルビ
 	MethodType   int    `json:"methodType"`                         // 処理のタイプ
 	TellAddress  string `json:"tellAddress"`                        //電話番号	// unique検討
 	TellType     int    `json:"tellType"`                           // 冊数
