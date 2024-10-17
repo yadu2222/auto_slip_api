@@ -11,6 +11,7 @@ type CountingService struct{}
 // 本の情報を見出しに、顧客データをまとめた構造体
 type Counting struct {
 	Agency         model.Agency	`json:"agency"`
+	Note 		 string		`json:"note"`
 	RegularAgencys []model.RegularAgency	`json:"regularAgencys"`
 	CountFlag      bool		`json:"countFlag"`
 	LibraryCount	int `json:"livraryCount"`	
@@ -57,11 +58,16 @@ func (s *CountingService) MagazineCounting(agencyList []model.Agency) ([]Countin
 			}
 		}
 		
+		magazine,err := model.FindMagazineByCode(agency.MagazineCode)
+		if err != nil {
+			return nil, err
+		}
 
 		// agencyをキーにして、課題データのスライスをバリューにする
 		// counting構造体を初期化
 		counting := Counting{
 			Agency:         agency,
+			Note: magazine.Note,
 			RegularAgencys: countingList,
 			CountFlag:      agency.Quenity >= count,
 			DeliveryCount: deliveryCount,

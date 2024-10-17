@@ -19,6 +19,7 @@ type Magazine struct {
 	MagazineName string `json:"magazineName"`
 	TakerUuid    string `xorm:"varchar(36)" json:"takerUUID"`
 	TakerName    string `xorm:"-" json:"takerName"`
+	Note string `xorm:"varchar(100)" json:"note"`
 }
 
 func (Magazine) TableName() string {
@@ -171,13 +172,14 @@ func GetMagazines() ([]Magazine, error) {
 		MagazineCode string
 		TakerUuid    string
 		TakerName    string
+		Note string
 	}
 	var magazineInfos []MagazineInfo
 
 	// dbに投げる
 	err := db.Table("magazines").
 		Join("left", "employees", "magazines.taker_uuid = employees.employee_uuid").
-		Select("magazines.magazine_code,magazines.magazine_name,magazines.taker_uuid, employees.employee_name as taker_name").
+		Select("magazines.magazine_code,magazines.magazine_name,magazines.taker_uuid, employees.employee_name as taker_name,magazines.note").
 		Find(&magazineInfos)
 	if err != nil {
 		log.Println("雑誌の取得に失敗しました:", err)
@@ -190,6 +192,7 @@ func GetMagazines() ([]Magazine, error) {
 			MagazineName: magazineInfo.MagazineName,
 			TakerUuid:    magazineInfo.TakerUuid,
 			TakerName:    magazineInfo.TakerName,
+			Note: magazineInfo.Note,
 		}
 		magazines = append(magazines, magazine)
 	}
