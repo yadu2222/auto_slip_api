@@ -1,6 +1,7 @@
 package model
 
 import (
+	"auto_slip_api/model"
 	"fmt"
 	"log"
 	"os"
@@ -74,6 +75,8 @@ func MigrationTable() error {
 
 		
 	}
+
+	model.RegisterUser()
 
 	return nil
 }
