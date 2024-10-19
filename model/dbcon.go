@@ -58,6 +58,8 @@ func MigrationTable() error {
 			new(DeliveryLog),
 			new(InvoiceLog),
 			new(OparateLog),
+			new(User),
+			
 		)
 		if err != nil {
 			fmt.Println("Failed to sync database.", err)
@@ -70,9 +72,7 @@ func MigrationTable() error {
 			return err
 		}
 
-		// サンプルデータ作成
-		RegisterSample()
-
+		
 	}
 
 	return nil
@@ -133,6 +133,7 @@ func RegisterSample() {
 
 	// テストデータ
 	CreateEmployeeTestData()        // 従業員
+	RegisterUser()
 	// CreateMagazineTestData()        // 雑誌
 	// CreateCustomerTestData()        // 顧客
 	// CreateRegularTestData()         // 定期購読
