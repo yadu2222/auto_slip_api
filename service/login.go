@@ -33,3 +33,13 @@ func (s *LoginService) Login(loginUser model.User) (string, error) {
 	return token,nil
 }
 
+func(s *LoginService) CreateUser() error {
+	
+	// ユーザー情報を登録
+	err := model.RegisterUser()
+	if err != nil {
+		return err	// ユーザー登録失敗エラー
+	}
+	return nil
+}
+

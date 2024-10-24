@@ -59,3 +59,21 @@ func LoginHandler(c *gin.Context) {
 		},
 	})
 }
+
+// user作成
+func CreateUserHandler(c *gin.Context) {
+	
+	// 投げる
+	if err := loginService.CreateUser(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"srvResCode": 500,
+			"error":      "ユーザー情報の登録に失敗しました"})
+		return
+	}
+	// 成功レスポンス
+	c.JSON(http.StatusCreated, gin.H{
+		"srvResCode": 200,
+		"srvResMsg":  "ユーザー情報の登録に成功しました",
+		"srvResData": gin.H{},
+	})
+}

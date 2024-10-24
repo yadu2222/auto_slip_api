@@ -98,6 +98,12 @@ func GetRouter() (*gin.Engine, error) {
 			login.POST("/", controller.LoginHandler)
 		}
 
+		// 作成
+		create := v2.Group("/create")
+		{
+			create.POST("/", controller.CreateUserHandler)
+		}
+
 		auth := v2.Group("/auth",middleware.AuthMiddleware)	// ミドルウェアを適用
 
 		// 雑誌

@@ -41,7 +41,7 @@ func CheckPasswordHash(password, hash string) bool {
     return err == nil
 }
 
-func RegisterUser(){
+func RegisterUser() error{
     // ユーザー情報を登録する
     userId := os.Getenv("USER_ID")
     password := os.Getenv("USER_PASSWORD")
@@ -54,7 +54,7 @@ func RegisterUser(){
     hashedPassword, err := HashPassword(user.Password)
     if err != nil {
         log.Println("ユーザー情報の登録に失敗しました:", err)
-        return
+        return err
     }
     user.Password = hashedPassword
 
@@ -62,8 +62,9 @@ func RegisterUser(){
     _, err = db.Insert(&user)
     if err != nil {
         log.Println("ユーザー情報の登録に失敗しました:", err)
-        return
+        return err
     }
     log.Println("ユーザー情報を登録しました")
+    return err
 
 }
